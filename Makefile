@@ -4,7 +4,7 @@ CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
 LIBS = `pkg-config --libs gtk+-2.0` 
 
 
-all: 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar
+all: 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo
 
 # basic - display window only
 1_simplewindow: 1_simplewindow.o
@@ -35,10 +35,15 @@ all: 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplem
 2_menus_check: 2_menus_check.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 2_menus_check.o $(LIBS)
 
-# simple menu with image menus, mnemonics and accelerators.
+# simple toolbar
 2_menus_toolbar: 2_menus_toolbar.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 2_menus_toolbar.o $(LIBS)
 
 
+# demonstrates activation/inactivation of toolbar items (undo/redo)
+2_menus_undoredo: 2_menus_undoredo.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 2_menus_undoredo.o $(LIBS)
+
+
 clean:
-	rm -f *.o *~ 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check
+	rm -f *.o *~ 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo

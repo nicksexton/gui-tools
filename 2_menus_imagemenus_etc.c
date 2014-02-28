@@ -30,23 +30,23 @@ int main (int argc, char *argv[]) {
   vbox = gtk_vbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(window), vbox);
  
-  // NB menubar and menus derived from same widget (menu shell). Menu
-  // items are only valid children for menus (used to implment submenus)
-
-  // create a menubar and a menu 
   menubar = gtk_menu_bar_new();
   filemenu = gtk_menu_new();
 
+  // group of keyboard accelerators, attached to toplevel window
   accel_group = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
-
+  // add menemonic (ie Alt+F)
   file = gtk_menu_item_new_with_mnemonic("_File");
-  new = gtk_image_menu_item_new_from_stock(GTK_STOCK_NEW, NULL);
+  new = gtk_image_menu_item_new_from_stock(GTK_STOCK_NEW, NULL); 
+        // setting 2nd param to NULL automatically creates accelerators
   open = gtk_image_menu_item_new_from_stock(GTK_STOCK_OPEN, NULL);
-  sep = gtk_separator_menu_item_new();
+  sep = gtk_separator_menu_item_new(); // menu horizontal separator
   quit = gtk_image_menu_item_new_from_stock(GTK_STOCK_QUIT, accel_group);
 
+
+  // adds Ctrl + q keyboard accelerator
   gtk_widget_add_accelerator(quit, "activate", accel_group, 
 			     GDK_q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 

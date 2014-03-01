@@ -2,13 +2,12 @@ CC=gcc
 
 CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
 LIBS = `pkg-config --libs gtk+-2.0` 
+BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment
 
-
-all: 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox
-
+all: $(BINARIES)
 
 clean:
-	rm -f *.o *~ 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox
+	rm -f *.o *~ $(BINARIES) 
 
 
 # basic - display window only
@@ -49,12 +48,19 @@ clean:
 2_menus_undoredo: 2_menus_undoredo.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 2_menus_undoredo.o $(LIBS)
 
-# demonstrates activation/inactivation of toolbar items (undo/redo)
+# fixed container widget
 3_gtkfixed: 3_gtkfixed.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 3_gtkfixed.o $(LIBS)
 
 
-# demonstrates activation/inactivation of toolbar items (undo/redo)
+# vbox container widget
 3_gtkvbox: 3_gtkvbox.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 3_gtkvbox.o $(LIBS)
 
+# table container widget
+3_gtktable: 3_gtktable.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 3_gtktable.o $(LIBS)
+
+# gtkalignment container, controls alignment and size of its child widget
+3_gtkalignment: 3_gtkalignment.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 3_gtkalignment.o $(LIBS)

@@ -2,7 +2,7 @@ CC=gcc
 
 CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
 LIBS = `pkg-config --libs gtk+-2.0` 
-BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows
+BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback
 
 all: $(BINARIES)
 
@@ -69,3 +69,19 @@ clean:
 3_windows: 3_windows.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 3_windows.o $(LIBS)
 
+
+# Event handling - intro to callback functions
+4_1_callbacks: 4_1_callbacks.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 4_1_callbacks.o $(LIBS)
+
+# Event handling - moving window
+4_2_movingwindow: 4_2_movingwindow.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 4_2_movingwindow.o $(LIBS)
+
+# Event handling - enter signal
+4_3_entersignal: 4_3_entersignal.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 4_3_entersignal.o $(LIBS)
+
+# Event handling - disconnecting callback functions
+4_4_disconnectingcallback: 4_4_disconnectingcallback.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 4_4_disconnectingcallback.o $(LIBS)

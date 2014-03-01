@@ -2,7 +2,7 @@ CC=gcc
 
 CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
 LIBS = `pkg-config --libs gtk+-2.0` 
-BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback 4_5_dragdrop 4_6_timer 5_1_dialogs 5_2_aboutdialog 6_2_gtkcheckbutton
+BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback 4_5_dragdrop 4_6_timer 5_1_dialogs 5_2_aboutdialog 6_2_gtkcheckbutton 6_3_gtkframe 6_5_labelmarkup 7_1_combobox 7_2_separators 7_3_textentry
 
 all: $(BINARIES)
 
@@ -104,7 +104,30 @@ clean:
 5_2_aboutdialog: 5_2_aboutdialog.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 5_2_aboutdialog.o $(LIBS)
 
-# About Dialog
+# Widgets: Check buttons
 6_2_gtkcheckbutton: 6_2_gtkcheckbutton.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 6_2_gtkcheckbutton.o $(LIBS)
+
+# Widgets: Frames
+6_3_gtkframe: 6_3_gtkframe.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 6_3_gtkframe.o $(LIBS)
+
+# Widgets: Markup labels
+6_5_labelmarkup: 6_5_labelmarkup.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 6_5_labelmarkup.o $(LIBS)
+
+# Widgets 2: Combo boxes
+7_1_combobox: 7_1_combobox.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 7_1_combobox.o $(LIBS)
+
+# Widgets 2: Separators
+7_2_separators: 7_2_separators.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 7_2_separators.o $(LIBS)
+
+# Widgets 2: Separators
+7_3_textentry: 7_3_textentry.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 7_3_textentry.o $(LIBS)
+
+
+
 

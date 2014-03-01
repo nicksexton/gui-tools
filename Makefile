@@ -2,7 +2,7 @@ CC=gcc
 
 CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
 LIBS = `pkg-config --libs gtk+-2.0` 
-BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment
+BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows
 
 all: $(BINARIES)
 
@@ -64,3 +64,8 @@ clean:
 # gtkalignment container, controls alignment and size of its child widget
 3_gtkalignment: 3_gtkalignment.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 3_gtkalignment.o $(LIBS)
+
+# dialog for managing all opened windows (or tabs) - from JDeveloper application
+3_windows: 3_windows.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 3_windows.o $(LIBS)
+

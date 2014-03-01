@@ -1,53 +1,74 @@
 #include <gtk/gtk.h>
 
 
-int main (int argc, char **argv) {
+int main (int argc, char *argv[]) {
   
   GtkWidget *window;
+  GtkWidget *table;
+
   GtkWidget *label1;
   GtkWidget *label2;
-  GtkWidget *hseparator;
-  GtkWidget *vbox;
+  GtkWidget *label3;
 
+  GtkWidget *entry1;
+  GtkWidget *entry2;
+  GtkWidget *entry3;
 
   gtk_init(&argc, &argv);
 
   window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title(GTK_WINDOW(window), "GtkHSeparator");
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+  gtk_window_set_title(GTK_WINDOW(window), "GtkEntry");
+  gtk_container_set_border_width(GTK_CONTAINER(window), 10);
   //  gtk_window_set_default_size(GTK_WINDOW(window), 230, 150);
-  gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 
-  gtk_container_set_border_width(GTK_CONTAINER(window), 20);
 
-  label1 = gtk_label_new("Zinc is a moderately reactive, blue gray metal \
-that tarnishes in moist air and burns in air with a bright blueish-green flame,\
-giving off fumes of zinc oxide. It reacts with acids, alkalis and other non-metals.\
-If not completely pure, zinc reacts with dilute acids to release hydrogen.");
+  // table container to organise widgets
+  table = gtk_table_new(3, 2, FALSE);
+  gtk_container_add(GTK_CONTAINER(window), table);
 
-  gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
 
-  label2 = gtk_label_new("Copper is an essential trace nutrient to all high \
-plants and animals. In animals, including humans, it is found primarily in \
-the bloodstream, as a co-factor in various enzymes, and in copper-based pigments. \
-However, in sufficient amounts, copper can be poisonous and even fatal to organisms.");
+  label1 = gtk_label_new("Name");
+  label2 = gtk_label_new("Age");
+  label3 = gtk_label_new("Occupation");
 
-  gtk_label_set_line_wrap(GTK_LABEL(label2), TRUE);
+  gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1,
+		   GTK_FILL | GTK_SHRINK, GTK_FILL | GTK_SHRINK, 5, 5);
 
-  vbox = gtk_vbox_new(FALSE, 10);
-  gtk_container_add(GTK_CONTAINER(window), vbox);
+  gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2,
+		   GTK_FILL | GTK_SHRINK, GTK_FILL | GTK_SHRINK, 5, 5);
+  
+  gtk_table_attach(GTK_TABLE(table), label3, 0, 1, 2, 3,
+		   GTK_FILL | GTK_SHRINK, GTK_FILL | GTK_SHRINK, 5, 5);
 
-  hseparator = gtk_hseparator_new();
+  // create three text entry boxes
+  entry1 = gtk_entry_new();
+  entry2 = gtk_entry_new();
+  entry3 = gtk_entry_new();
 
-  gtk_box_pack_start(GTK_BOX(vbox), label1, FALSE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox), hseparator, FALSE, TRUE, 10);
-  gtk_box_pack_start(GTK_BOX(vbox), label2, FALSE, TRUE, 0);
 
+  gtk_table_attach(GTK_TABLE(table), entry1, 1, 2, 0, 1,
+		   GTK_FILL | GTK_SHRINK, GTK_FILL | GTK_SHRINK, 5, 5);
+
+  gtk_table_attach(GTK_TABLE(table), entry2, 1, 2, 1, 2,
+		   GTK_FILL | GTK_SHRINK, GTK_FILL | GTK_SHRINK, 5, 5);
+  
+  gtk_table_attach(GTK_TABLE(table), entry3, 1, 2, 2, 3,
+		   GTK_FILL | GTK_SHRINK, GTK_FILL | GTK_SHRINK, 5, 5);
+
+  gtk_widget_show(table);
+  gtk_widget_show(label1);
+  gtk_widget_show(label2);
+  gtk_widget_show(label3);
+
+  gtk_widget_show(entry1);
+  gtk_widget_show(entry2);
+  gtk_widget_show(entry3);
 
   g_signal_connect_swapped (window, "destroy", 
 			    G_CALLBACK(gtk_main_quit), G_OBJECT(window));
 
-  gtk_widget_show_all(window);
+  gtk_widget_show(window);
 
   gtk_main();
 

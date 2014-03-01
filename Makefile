@@ -2,7 +2,7 @@ CC=gcc
 
 CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
 LIBS = `pkg-config --libs gtk+-2.0` 
-BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback
+BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback 4_5_dragdrop 4_6_timer
 
 all: $(BINARIES)
 
@@ -85,3 +85,12 @@ clean:
 # Event handling - disconnecting callback functions
 4_4_disconnectingcallback: 4_4_disconnectingcallback.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 4_4_disconnectingcallback.o $(LIBS)
+
+
+# Event handling - drag and drop example
+4_5_dragdrop: 4_5_dragdrop.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 4_5_dragdrop.o $(LIBS)
+
+# Event handling - timer function
+4_6_timer: 4_6_timer.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 4_6_timer.o $(LIBS)

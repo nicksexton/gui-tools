@@ -2,7 +2,7 @@ CC=gcc
 
 CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
 LIBS = `pkg-config --libs gtk+-2.0` 
-BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback 4_5_dragdrop 4_6_timer 5_1_dialogs 5_2_aboutdialog
+BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback 4_5_dragdrop 4_6_timer 5_1_dialogs 5_2_aboutdialog 6_2_gtkcheckbutton
 
 all: $(BINARIES)
 
@@ -103,3 +103,8 @@ clean:
 # About Dialog
 5_2_aboutdialog: 5_2_aboutdialog.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 5_2_aboutdialog.o $(LIBS)
+
+# About Dialog
+6_2_gtkcheckbutton: 6_2_gtkcheckbutton.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 6_2_gtkcheckbutton.o $(LIBS)
+

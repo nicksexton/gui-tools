@@ -14,6 +14,8 @@ If not completely pure, zinc reacts with dilute acids to release hydrogen.");
 
   grid = gtk_grid_new();
   gtk_grid_attach (GTK_GRID(grid), label1, 0, 0, 1, 1);
+  gtk_widget_set_vexpand (GTK_WIDGET(grid), TRUE);
+
 
   gtk_widget_show_all(grid);
   return (grid);

@@ -1,15 +1,9 @@
 CC=gcc
 
-CFLAGS= `pkg-config --cflags gtk+-3.0` -Wall -Werror -g
-LIBS = `pkg-config --libs gtk+-3.0` 
+CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
+LIBS = `pkg-config --libs gtk+-2.0` 
 
-# CFLAGS= `pkg-config --cflags gtk+-2.0` -Wall -Werror -g
-# LIBS = `pkg-config --libs gtk+-2.0` 
-
-# GTK3CFLAGS = `pkg-config --cflags gtk+-3.0` -Wall -Werror -g
-# GTK3LIBS = `pkg-config --libs gtk+-3.0` 
-
-BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback 4_5_dragdrop 4_6_timer 5_1_dialogs 5_2_aboutdialog 6_2_gtkcheckbutton 6_3_gtkframe 6_5_labelmarkup 7_1_combobox 7_2_separators 7_3_textentry 7_4_statusbar gtk3_entry gtk3_applicationwindow
+BINARIES = 1_simplewindow 1_simplewindow_withicon 1_simplewindow_withwidgets 2_simplemenu 2_menus_imagemenus_etc 2_menus_check 2_menus_toolbar 2_menus_undoredo 3_gtkfixed 3_gtkvbox 3_gtktable 3_gtkalignment 3_windows 4_1_callbacks 4_2_movingwindow 4_3_entersignal 4_4_disconnectingcallback 4_5_dragdrop 4_6_timer 5_1_dialogs 5_2_aboutdialog 6_2_gtkcheckbutton 6_3_gtkframe 6_5_labelmarkup 7_1_combobox 7_2_separators 7_3_textentry 7_4_statusbar 
 
 all: $(BINARIES)
 
@@ -138,19 +132,3 @@ clean:
 # Widgets 2: Statusbar
 7_4_statusbar: 7_4_statusbar.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) 7_4_statusbar.o $(LIBS)
-
-
-# GTK+3.0 examples: text entry
-gtk3_entry: gtk3_entry.o
-	$(CC) -o $@ $(GTK3CFLAGS) $(LDFLAGS) gtk3_entry.o $(GTK3LIBS)
-
-#gtk3_entry.o:
-#	$(CC) -c gtk3_entry.c $(CFLAGS) $(LDFLAGS) $(LIBS)	
-
-
-# GTK+3.0 examples: application window
-gtk3_applicationwindow: gtk3_applicationwindow.o
-	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) gtk3_applicationwindow.o $(LIBS)
-
-#gtk3_entry.o:
-#	$(CC) -c gtk3_applicationwindow.c $(GTK3CFLAGS) $(LDFLAGS) $(GTK3LIBS)	

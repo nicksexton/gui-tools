@@ -32,7 +32,6 @@ gtk3_containers_grid: gtk3_containers_grid.o
 gtk3_packing: gtk3_packing.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) gtk3_packing.o $(LIBS)
 
-# GTK+3.0 examples: containers: grid
+# GTK+3.0 examples: UI builder (gtkbuilder)
 gtk3_gtkbuilder: gtk3_gtkbuilder.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) gtk3_gtkbuilder.o $(LIBS)
-

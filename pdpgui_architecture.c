@@ -1,8 +1,8 @@
 #include <gtk/gtk.h>
 #include "pdpgui_draw.h"
 
-#define WINDOW_WIDTH 300
-#define WINDOW_HEIGHT 300
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 
 
@@ -38,6 +38,71 @@ void pdpgui_draw_example (GtkWidget *widget, cairo_t *cr, gpointer data) {
 
 }
 
+// example drawing callback function
+void pdpgui_draw_example_network (GtkWidget *widget, cairo_t *cr, gpointer data) {
+
+  double activation_a1, activation_a2, activation_a3, activation_b1, activation_b2;
+
+  // set locations of units to draw 
+  PdpguiCoords location_a1 = { .x = 300, .y = 400};
+  PdpguiCoords location_a2 = { .x = 400, .y = 400};
+  PdpguiCoords location_a3 = { .x = 500, .y = 400};
+
+  PdpguiCoords location_b1 = { .x = 350, .y = 200};
+  PdpguiCoords location_b2 = { .x = 450, .y = 200};
+
+  // set control points for curved connections
+  // PdpguiCoords location_control1 = { .x = 400, .y = 266};
+  // PdpguiCoords location_control2 = { .x = 400, .y = 333};
+
+
+  // set activation of units
+  activation_a1 = 0.1;
+  activation_a2 = 0.25;
+  activation_a3 = 0.85;
+
+  activation_b1 = 0.0;
+  activation_b2 = 0.9;
+
+
+  // set unit colours
+  PdpguiColourRgb a_colour_on = { .r = 0.9, .g = 0.1, .b = 0.1};
+  PdpguiColourRgb a_colour_off = { .r = 0.1, .g = 0.1, .b = 0.1};
+
+  PdpguiColourRgb b_colour_on = { .r = 0.15, .g = 0.1, .b = 0.9};
+  PdpguiColourRgb b_colour_off = { .r = 0.15, .g = 0.1, .b = 0.3};
+
+  
+  // set colour for background
+  cairo_set_source_rgb (cr, 1, 1, 1);
+  // fill background colour
+  cairo_paint (cr);
+
+  // draw layer 1
+  pdpgui_draw_unit (cr, location_a1, a_colour_off, a_colour_on, activation_a1);
+  pdpgui_draw_unit (cr, location_a2, a_colour_off, a_colour_on, activation_a2);
+  pdpgui_draw_unit (cr, location_a3, a_colour_off, a_colour_on, activation_a3);
+
+
+  // draw layer 2
+  pdpgui_draw_unit (cr, location_b1, b_colour_off, b_colour_on, activation_b1);
+  pdpgui_draw_unit (cr, location_b2, b_colour_off, b_colour_on, activation_b2);
+
+
+  // draw connections (curved)
+  pdpgui_draw_connection (cr, location_a1, location_b1);
+  pdpgui_draw_connection (cr, location_a1, location_b2);
+
+  pdpgui_draw_connection (cr, location_a2, location_b1);
+  pdpgui_draw_connection (cr, location_a2, location_b2);
+
+  pdpgui_draw_connection (cr, location_a3, location_b1);
+  pdpgui_draw_connection (cr, location_a3, location_b2);
+
+
+
+}
+
 
 static GtkWidget* create_notepage_architecture() {
   // creates a notepage that contains a drawing area
@@ -49,7 +114,7 @@ static GtkWidget* create_notepage_architecture() {
 
   drawing_area = gtk_drawing_area_new();
   gtk_widget_set_size_request(drawing_area, WINDOW_WIDTH, WINDOW_HEIGHT);
-  g_signal_connect (drawing_area, "draw", G_CALLBACK(pdpgui_draw_example), NULL);
+  g_signal_connect (drawing_area, "draw", G_CALLBACK(pdpgui_draw_example_network), NULL);
 
   grid = gtk_grid_new();
   gtk_grid_attach (GTK_GRID (grid), label, 0, 0, 1, 1);

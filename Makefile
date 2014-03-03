@@ -20,3 +20,10 @@ gtk_notebook: gtk_notebook.o
 gtk_drawingarea: gtk_drawingarea.o
 	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) gtk_drawingarea.o $(LIBS)
 
+
+# example - draws a basic network architecture inside a multi-tabbed notebook
+pdpgui_architecture: pdpgui_architecture.o pdpgui_draw.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) pdpgui_architecture.o $(LIBS)
+
+pdpgui_draw.o: 
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) pdpgui_draw.o $(LIBS)

@@ -4,8 +4,8 @@
 #include <gtk/gtk.h>
 
 
-// example drawing function!
-void pdpgui_draw_example (GtkWidget *widget, cairo_t *cr, gpointer data);
+
+
 
 
 #endif

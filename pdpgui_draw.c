@@ -5,6 +5,9 @@
 
 #define DEFAULT_UNIT_SIZE 20
 
+#define AXIS_OFFSET_X 0.1
+#define AXIS_OFFSET_Y 0.1
+
 void pdpgui_draw_unit (cairo_t *cr, 
 		       PdpguiCoords unit_centre, 
 		       PdpguiColourRgb colour_off,
@@ -60,3 +63,56 @@ void pdpgui_draw_connection_curved (cairo_t *cr,
 
 }
  
+void pdpgui_draw_graph_axis_x (cairo_t *cr 
+			       //,  double x_min, double x_max
+			       ){
+  double ux = 1, uy = 1;
+  double axis_division_x, axis_division_y;
+  int i;
+
+  double axis_offset_x = AXIS_OFFSET_X;
+  double axis_offset_y = AXIS_OFFSET_Y;
+
+  // set line width in userspace coordinates
+  cairo_device_to_user_distance (cr, &ux, &uy);
+  if (ux < uy)
+    ux = uy;
+  cairo_set_line_width (cr, ux);
+
+  // set line colour to black
+  cairo_set_source_rgb (cr, 0, 0, 0);
+
+
+  // draw x axis
+  cairo_move_to (cr, axis_offset_x, (1 - axis_offset_y));
+  cairo_line_to (cr, (1 - axis_offset_x), (1 - axis_offset_y));
+  cairo_stroke(cr);
+
+  // tick marks:
+  for (i = 0; i < 11; i ++) {
+    axis_division_x = (1 - (2 * axis_offset_x)) / 10;
+    cairo_move_to (cr, axis_offset_x + (i * axis_division_x), 
+		   (1 - axis_offset_y));
+    cairo_line_to (cr, axis_offset_x + (i * axis_division_x), 
+		   (1 - axis_offset_y + 0.02));
+    cairo_stroke(cr);
+  }
+
+  // draw y axis
+  cairo_move_to (cr, axis_offset_x, axis_offset_y);
+  cairo_line_to (cr, axis_offset_x, (1 - axis_offset_y));
+  cairo_stroke(cr);
+
+  // tick marks:
+  for (i = 0; i < 11; i ++) {
+    axis_division_y = (1 - (2 * axis_offset_y)) / 10;
+    cairo_move_to (cr, axis_offset_x, 
+		   (1 - axis_offset_y) - (i * axis_division_y));
+    cairo_line_to (cr, axis_offset_x - 0.02, 
+		   (1 - axis_offset_y) - (i * axis_division_y));
+    cairo_stroke(cr);
+  }
+
+
+
+}

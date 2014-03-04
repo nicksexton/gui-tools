@@ -99,9 +99,20 @@ void pdpgui_draw_example_network (GtkWidget *widget, cairo_t *cr, gpointer data)
   pdpgui_draw_connection (cr, location_a3, location_b1);
   pdpgui_draw_connection (cr, location_a3, location_b2);
 
+}
 
+void pdpgui_draw_example_graph (GtkWidget *widget, cairo_t *cr, gpointer data) {
+
+  cairo_scale (cr, WINDOW_WIDTH, WINDOW_HEIGHT);
+  // set colour for background
+  cairo_set_source_rgb (cr, 1, 1, 1);
+  // fill background colour
+  cairo_paint (cr);
+
+  pdpgui_draw_graph_axis_x(cr);
 
 }
+
 
 
 static GtkWidget* create_notepage_architecture() {
@@ -123,6 +134,29 @@ static GtkWidget* create_notepage_architecture() {
   return (grid);
 
 }
+
+static GtkWidget* create_notepage_graph() {
+  // example notepage that draws a graph (eg., of network activation during a trial)
+
+  GtkWidget *grid;
+  GtkWidget *drawing_area;
+  GtkWidget *label;
+
+  label = gtk_label_new ("Network Activation");
+
+  drawing_area = gtk_drawing_area_new();
+  gtk_widget_set_size_request(drawing_area, WINDOW_WIDTH, WINDOW_HEIGHT);
+  g_signal_connect (drawing_area, "draw", G_CALLBACK(pdpgui_draw_example_graph), NULL);
+
+  grid = gtk_grid_new();
+  gtk_grid_attach (GTK_GRID (grid), label, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid), drawing_area, 0, 1, 1, 1);
+
+  return (grid);
+
+}
+
+
 
 static GtkWidget* create_notepage_zinc() {
 
@@ -213,6 +247,9 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_notebook_append_page(GTK_NOTEBOOK(notes), 
 			   create_notepage_architecture(), 
 			   gtk_label_new("Architecture"));
+  gtk_notebook_append_page(GTK_NOTEBOOK(notes), 
+			   create_notepage_graph(), 
+			   gtk_label_new("Graph Activation"));
   gtk_notebook_append_page(GTK_NOTEBOOK(notes), 
 			   create_notepage_zinc(), 
 			   gtk_label_new("Zinc"));

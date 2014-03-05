@@ -32,8 +32,11 @@ void pdpgui_draw_connection_curved (cairo_t *cr,
 				    PdpguiCoords intermediate_lower,
 				    PdpguiCoords intermediate_upper);
 
-void pdpgui_draw_graph_axis_x (cairo_t *cr 
+void pdpgui_draw_graph_axes (cairo_t *cr 
 			       // , double x_min, double x_max
 			       );
+
+
+
 
 #endif

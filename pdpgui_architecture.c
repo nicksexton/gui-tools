@@ -5,7 +5,6 @@
 #define WINDOW_HEIGHT 600
 
 
-
 // example drawing callback function
 void pdpgui_draw_example (GtkWidget *widget, cairo_t *cr, gpointer data) {
 
@@ -109,7 +108,9 @@ void pdpgui_draw_example_graph (GtkWidget *widget, cairo_t *cr, gpointer data) {
   // fill background colour
   cairo_paint (cr);
 
-  pdpgui_draw_graph_axis_x(cr);
+  pdpgui_draw_graph_axes(cr);
+
+
 
 }
 

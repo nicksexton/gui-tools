@@ -63,7 +63,7 @@ void pdpgui_draw_connection_curved (cairo_t *cr,
 
 }
  
-void pdpgui_draw_graph_axis_x (cairo_t *cr 
+void pdpgui_draw_graph_axes (cairo_t *cr 
 			       //,  double x_min, double x_max
 			       ){
   double ux = 1, uy = 1;
@@ -112,7 +112,5 @@ void pdpgui_draw_graph_axis_x (cairo_t *cr
 		   (1 - axis_offset_y) - (i * axis_division_y));
     cairo_stroke(cr);
   }
-
-
 
 }

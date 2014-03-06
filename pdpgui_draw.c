@@ -79,12 +79,11 @@ void pdpgui_draw_graph_axes (cairo_t *cr,
 			     double y_min, double y_max){
 
   double axis_division_x; 
-  // double axis_division_y;
+  double axis_division_y;
   int i;
 
   double axis_margin_x = AXIS_MARGIN_X * window_width;
   double axis_margin_y = AXIS_MARGIN_Y * window_height;
-  double text_height; 
 
   PangoLayout *layout;
   char textbuf[32];
@@ -92,7 +91,7 @@ void pdpgui_draw_graph_axes (cairo_t *cr,
 
 
   axis_division_x = (window_width - (2 * axis_margin_x)) / x_divisions;
-
+  axis_division_y = (window_height - (2 * axis_margin_y)) / y_divisions;
   printf ("axis margins:\t x: %4.2f\t y: %4.2f\n", axis_margin_x, axis_margin_y);
 
 
@@ -100,6 +99,9 @@ void pdpgui_draw_graph_axes (cairo_t *cr,
   cairo_set_source_rgb (cr, 0, 0, 0);
   cairo_set_line_width (cr, 2);
 
+  // set text parameters
+  layout = pango_cairo_create_layout (cr);
+  pangox_layout_set_font_size (layout, 10);
 
   // draw x axis
   
@@ -109,63 +111,51 @@ void pdpgui_draw_graph_axes (cairo_t *cr,
 
   // x axis tick marks:
   for (i = 0; i < (x_divisions + 1); i ++) {
+    // draw the tick mark
     cairo_move_to (cr, axis_margin_x + (i * axis_division_x), 
 		   (window_height - axis_margin_y));
     cairo_line_to (cr, axis_margin_x + (i * axis_division_x), 
 		   (window_height - axis_margin_y + (0.01 * window_height)));
     cairo_stroke(cr);
 
-
-  }
-  
-
-  // axis labels
-  // set text parameters
-  
-
-  layout = pango_cairo_create_layout (cr);
-  pangox_layout_set_font_size (layout, 10);
-      
-  for (i = 0; i < (x_divisions + 1); i ++) {
-
-
-    g_snprintf (textbuf, 10, "%3.1f", (x_min + (i * (x_max - x_min) / x_divisions)));
- 
-    // offset y for text height
-
-    text_height = pangox_layout_get_font_height (layout);
-    
+    // draw axis label
+    g_snprintf (textbuf, 10, "%3.1f", (x_min + (i * (x_max - x_min) / x_divisions)));     
     cairox_text_parameters_set (&text_params, 
 				axis_margin_x + (i * axis_division_x), 
 				(window_height - axis_margin_y) + (0.015 * window_height),
 				PANGOX_XALIGN_CENTER, PANGOX_YALIGN_TOP, 0.0);
-    
-    printf ("label at: %4.2f, %4.2f\n", 
-	    (axis_margin_x + (i * axis_division_x)), 
-	    (window_height - axis_margin_y + (0.01 * window_height) + text_height)
-	    );
-    
     cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+
   }
+  
 
-
-  /*
+    
   // draw y axis
   cairo_move_to (cr, axis_margin_x, axis_margin_y);
-  cairo_line_to (cr, axis_margin_x, (1 - axis_margin_y));
+  cairo_line_to (cr, axis_margin_x, (window_height - axis_margin_y));
   cairo_stroke(cr);
 
   // y axis tick marks:
-  for (i = 0; i < (y_divisions +1); i ++) {
-    axis_division_y = (1 - (2 * axis_margin_y)) / y_divisions;
-    cairo_move_to (cr, axis_margin_x, 
-  		   (1 - axis_margin_y) - (i * axis_division_y));
-    cairo_line_to (cr, axis_margin_x - 0.02, 
-  		   (1 - axis_margin_y) - (i * axis_division_y));
-    cairo_stroke(cr);
-  }
+  for (i = 0; i < (y_divisions + 1); i ++) {
 
-  */
+    cairo_move_to (cr, axis_margin_x, 
+  		   (window_height - axis_margin_y) - (i * axis_division_y));
+    cairo_line_to (cr, axis_margin_x - (0.01 * window_width), 
+  		   (window_height - axis_margin_y) - (i * axis_division_y));
+    cairo_stroke(cr);
+
+    // draw axis label
+    g_snprintf (textbuf, 10, "%3.1f", (y_min + (i * (y_max - y_min) / y_divisions)));     
+    cairox_text_parameters_set (&text_params, 
+				axis_margin_x - (0.015 * window_width), 
+				(window_height - axis_margin_y) - (i * axis_division_y),
+				PANGOX_XALIGN_RIGHT, PANGOX_YALIGN_CENTER, 0.0);
+    cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+
+
+  }
+ 
+  
 
 
   // y axis scale

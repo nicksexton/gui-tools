@@ -27,8 +27,8 @@ gtk_pango_layout: gtk_pango_layout.o lib_cairox.o
 
 
 # example - draws a basic network architecture inside a multi-tabbed notebook
-pdpgui_architecture: pdpgui_architecture.o pdpgui_draw.o
-	$(CC) -o $@ $(CFLAGS) pdpgui_draw.o $(LDFLAGS) pdpgui_architecture.o $(LIBS)
+pdpgui_architecture: pdpgui_architecture.o pdpgui_draw.o lib_cairox.o
+	$(CC) -o $@ $(CFLAGS) pdpgui_draw.o lib_cairox.o $(LDFLAGS) pdpgui_architecture.o $(LIBS)
 
 pdpgui_draw.o: 
 	$(CC) -c pdpgui_draw.c $(CFLAGS) $(LDFLAGS) $(LIBS)

@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
+#include <pango/pangocairo.h>
 #include "pdpgui_draw.h"
+#include "lib_cairox.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -102,18 +104,69 @@ void pdpgui_draw_example_network (GtkWidget *widget, cairo_t *cr, gpointer data)
 
 void pdpgui_draw_example_graph (GtkWidget *widget, cairo_t *cr, gpointer data) {
 
-  cairo_scale (cr, WINDOW_WIDTH, WINDOW_HEIGHT);
+  // cairo_scale (cr, WINDOW_WIDTH, WINDOW_HEIGHT);
   // set colour for background
-  cairo_set_source_rgb (cr, 1, 1, 1);
+  // cairo_set_source_rgb (cr, 1, 1, 1);
   // fill background colour
-  cairo_paint (cr);
+  // cairo_paint (cr);
 
-  pdpgui_draw_graph_axes(cr);
+  pdpgui_draw_graph_axes(cr, 10, 10, 0.0, 200.0, 0.0, 1.0);
 
 
 
 }
 
+/*
+// Test pango layout
+static void pango_layout (GtkWidget *widget, cairo_t *cr, gpointer data) {
+
+  PangoLayout *layout;
+  CairoxTextParameters text_params;
+  char textbuf[160];
+  
+  layout = pango_cairo_create_layout (cr);
+
+  // set colour for background
+  cairo_set_source_rgb (cr, 1, 1, 1);
+  // fill background colour
+  cairo_paint (cr);
+
+  g_snprintf (textbuf, 160, "Labyrinth");
+
+  // print large
+  pangox_layout_set_font_size (layout, 15);
+
+  cairox_text_parameters_set (&text_params, 50, 50, PANGOX_XALIGN_LEFT, PANGOX_YALIGN_TOP, 0.0);
+  cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
+  cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+
+
+  // print small
+  pangox_layout_set_font_size (layout, 10);
+
+  cairox_text_parameters_set (&text_params, 50, 100, PANGOX_XALIGN_LEFT, PANGOX_YALIGN_TOP, 0.0);
+  cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
+  cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+
+
+  // print many
+  
+  int i;
+
+  for (i = 0; i < 10; i ++) {
+    cairox_text_parameters_set (&text_params, 
+				50 + (i * 50), 
+				(150 + i * 50), 
+				PANGOX_XALIGN_LEFT, PANGOX_YALIGN_TOP, 0.0);
+  cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
+  cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+  }
+
+  pango_cairo_show_layout(cr, layout);
+
+
+}
+*/
 
 
 static GtkWidget* create_notepage_architecture() {
@@ -148,6 +201,7 @@ static GtkWidget* create_notepage_graph() {
   drawing_area = gtk_drawing_area_new();
   gtk_widget_set_size_request(drawing_area, WINDOW_WIDTH, WINDOW_HEIGHT);
   g_signal_connect (drawing_area, "draw", G_CALLBACK(pdpgui_draw_example_graph), NULL);
+  // g_signal_connect (drawing_area, "draw", G_CALLBACK(pango_layout), NULL);
 
   grid = gtk_grid_new();
   gtk_grid_attach (GTK_GRID (grid), label, 0, 0, 1, 1);
@@ -156,6 +210,8 @@ static GtkWidget* create_notepage_graph() {
   return (grid);
 
 }
+
+
 
 
 

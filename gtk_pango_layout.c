@@ -22,9 +22,37 @@ static void pango_layout (GtkWidget *widget, cairo_t *cr, gpointer data) {
   cairo_paint (cr);
 
   g_snprintf (textbuf, 160, "Labyrinth");
+
+  // print large
+  pangox_layout_set_font_size (layout, 15);
+
   cairox_text_parameters_set (&text_params, 50, 50, PANGOX_XALIGN_LEFT, PANGOX_YALIGN_TOP, 0.0);
   cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
   cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+
+
+  // print small
+  pangox_layout_set_font_size (layout, 10);
+
+  cairox_text_parameters_set (&text_params, 50, 100, PANGOX_XALIGN_LEFT, PANGOX_YALIGN_TOP, 0.0);
+  cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
+  cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+
+
+  // print many
+  
+  int i;
+
+  for (i = 0; i < 10; i ++) {
+    cairox_text_parameters_set (&text_params, 
+				50 + (i * 50), 
+				(150 + i * 50), 
+				PANGOX_XALIGN_LEFT, PANGOX_YALIGN_TOP, 0.0);
+  cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
+  cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+  }
+
+
 
 
 }

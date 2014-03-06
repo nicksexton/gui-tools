@@ -10,7 +10,10 @@
 
 #define AXIS_MARGIN_X 0.1
 #define AXIS_MARGIN_Y 0.1
-#define AXIS_LABEL_FONT_SIZE 11
+#define AXIS_WIDTH 4
+#define AXIS_LABEL_FONT_SIZE 9
+
+#define FONT_HEIGHT 12 // fix with access function
 
 
 
@@ -69,106 +72,81 @@ void pdpgui_draw_connection_curved (cairo_t *cr,
 
 }
  
-void pdpgui_draw_graph_axes (cairo_t *cr,
+void pdpgui_draw_graph_axes (cairo_t *cr, 
+			     guint window_width, guint window_height,
 			     int x_divisions, int y_divisions,
 			     double x_min, double x_max, 
 			     double y_min, double y_max){
-  double ux = 1, uy = 1;
-  // double axis_division_x; 
-  // double axis_division_y;
-  // int i;
 
-  //  double axis_margin_x = AXIS_MARGIN_X;
-  // double axis_margin_y = AXIS_MARGIN_Y;
-  // double text_height; 
+  double axis_division_x; 
+  // double axis_division_y;
+  int i;
+
+  double axis_margin_x = AXIS_MARGIN_X * window_width;
+  double axis_margin_y = AXIS_MARGIN_Y * window_height;
+  double text_height; 
 
   PangoLayout *layout;
   char textbuf[32];
   CairoxTextParameters text_params;
 
 
-  // axis_division_x = (1 - (2 * axis_margin_x)) / x_divisions;
+  axis_division_x = (window_width - (2 * axis_margin_x)) / x_divisions;
 
-  // set line width in userspace coordinates
-  cairo_device_to_user_distance (cr, &ux, &uy);
-  if (ux < uy)
-    ux = uy;
+  printf ("axis margins:\t x: %4.2f\t y: %4.2f\n", axis_margin_x, axis_margin_y);
 
 
   // set line parameters
-  //cairo_set_source_rgb (cr, 0, 0, 0);
-  //cairo_set_line_width (cr, ux);
-
+  cairo_set_source_rgb (cr, 0, 0, 0);
+  cairo_set_line_width (cr, 2);
 
 
   // draw x axis
-  /*
-  cairo_move_to (cr, axis_margin_x, (1 - axis_margin_y));
-  cairo_line_to (cr, (1 - axis_margin_x), (1 - axis_margin_y));
+  
+  cairo_move_to (cr, axis_margin_x, (window_height - axis_margin_y));
+  cairo_line_to (cr, (window_width - axis_margin_x), (window_height - axis_margin_y));
   cairo_stroke(cr);
 
   // x axis tick marks:
   for (i = 0; i < (x_divisions + 1); i ++) {
     cairo_move_to (cr, axis_margin_x + (i * axis_division_x), 
-		   (1 - axis_margin_y));
+		   (window_height - axis_margin_y));
     cairo_line_to (cr, axis_margin_x + (i * axis_division_x), 
-		   (1 - axis_margin_y + 0.02));
+		   (window_height - axis_margin_y + (0.01 * window_height)));
     cairo_stroke(cr);
 
 
   }
-  */
+  
 
   // axis labels
-
-
   // set text parameters
   
-  g_snprintf (textbuf, 32, "LLAMA");
 
   layout = pango_cairo_create_layout (cr);
-
-  pangox_layout_set_font_size(layout, AXIS_LABEL_FONT_SIZE);
-  cairox_text_parameters_set (&text_params, 
-			      50,
-			      50,
-			      PANGOX_XALIGN_CENTER, PANGOX_YALIGN_TOP, 0.0);
-  cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
-
-  cairox_paint_pango_text (cr, &text_params, layout, textbuf);
-  
-  //   pango_cairo_show_layout (cr, layout);
+  pangox_layout_set_font_size (layout, 10);
+      
+  for (i = 0; i < (x_divisions + 1); i ++) {
 
 
-  
-  //  cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
-
-    
-
-  //for (i = 0; i < (x_divisions + 1); i ++) {
-
-
-    // g_snprintf (textbuf, 10, "%3.1f", (x_min + (i * ((x_max - x_min) / x_divisions)));
-    //g_snprintf (textbuf, 32, "%d", i);
+    g_snprintf (textbuf, 10, "%3.1f", (x_min + (i * (x_max - x_min) / x_divisions)));
  
     // offset y for text height
-    // text_height = pangox_layout_get_font_height (layout);
-    // cairo_device_to_user_distance (cr, 0, &text_height);
+
+    text_height = pangox_layout_get_font_height (layout);
     
-    //    cairox_text_parameters_set (&text_params, 
-    //				axis_margin_x + (i * axis_division_x), 
-    //				axis_margin_y + 0.02 + text_height,
-    //				PANGOX_XALIGN_LEFT, PANGOX_YALIGN_TOP, 0.0);
-
-    //cairox_text_parameters_set (&text_params, 
-  //				axis_margin_x + (i * axis_division_x), 
-  //				axis_margin_y + 0.03,
-  //				PANGOX_XALIGN_CENTER, PANGOX_YALIGN_TOP, 0.0);
-
-//cairox_text_parameters_set_foreground (&text_params, 1, 0, 0);
-
-//  cairox_paint_pango_text (cr, &text_params, layout, textbuf);
-  //}
+    cairox_text_parameters_set (&text_params, 
+				axis_margin_x + (i * axis_division_x), 
+				(window_height - axis_margin_y) + (0.015 * window_height),
+				PANGOX_XALIGN_CENTER, PANGOX_YALIGN_TOP, 0.0);
+    
+    printf ("label at: %4.2f, %4.2f\n", 
+	    (axis_margin_x + (i * axis_division_x)), 
+	    (window_height - axis_margin_y + (0.01 * window_height) + text_height)
+	    );
+    
+    cairox_paint_pango_text (cr, &text_params, layout, textbuf);
+  }
 
 
   /*

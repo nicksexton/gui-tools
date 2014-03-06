@@ -1,9 +1,9 @@
 #include <gtk/gtk.h>
-#include <pango/pangocairo.h>
+// #include <pango/pangocairo.h>
 #include "pdpgui_draw.h"
 #include "lib_cairox.h"
 
-#define WINDOW_WIDTH 800
+#define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
 
 
@@ -110,8 +110,13 @@ void pdpgui_draw_example_graph (GtkWidget *widget, cairo_t *cr, gpointer data) {
   // fill background colour
   // cairo_paint (cr);
 
-  pdpgui_draw_graph_axes(cr, 10, 10, 0.0, 200.0, 0.0, 1.0);
+  guint widget_width, widget_height;
+  widget_width = gtk_widget_get_allocated_width (GTK_WIDGET(widget));
+  widget_height = gtk_widget_get_allocated_height (GTK_WIDGET(widget));
 
+  printf ("%d x %d\n", widget_width, widget_height);
+
+  pdpgui_draw_graph_axes(cr, widget_width, widget_height, 10, 10, 0.0, 200.0, 0.0, 1.0);
 
 
 }
@@ -199,12 +204,15 @@ static GtkWidget* create_notepage_graph() {
   label = gtk_label_new ("Network Activation");
 
   drawing_area = gtk_drawing_area_new();
-  gtk_widget_set_size_request(drawing_area, WINDOW_WIDTH, WINDOW_HEIGHT);
+  // gtk_widget_set_size_request(drawing_area, WINDOW_WIDTH, WINDOW_HEIGHT);
   g_signal_connect (drawing_area, "draw", G_CALLBACK(pdpgui_draw_example_graph), NULL);
   // g_signal_connect (drawing_area, "draw", G_CALLBACK(pango_layout), NULL);
 
   grid = gtk_grid_new();
   gtk_grid_attach (GTK_GRID (grid), label, 0, 0, 1, 1);
+
+  gtk_widget_set_hexpand (drawing_area, TRUE);
+  gtk_widget_set_vexpand (drawing_area, TRUE);
   gtk_grid_attach (GTK_GRID (grid), drawing_area, 0, 1, 1, 1);
 
   return (grid);
@@ -274,7 +282,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   // Create a window with a title, default size, and set border width
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW(window), "GUI: notebook");
-  gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
+  gtk_window_set_default_size(GTK_WINDOW(window), 800, 800);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_container_set_border_width (GTK_CONTAINER(window), 10);
   
@@ -317,7 +325,15 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   // Create a full-window grid to contain toolbar and the notebook
   grid = gtk_grid_new();
+  
+  // options for toolbar
+  gtk_widget_set_hexpand (toolbar, TRUE);
+  gtk_widget_set_vexpand (toolbar, FALSE);
   gtk_grid_attach (GTK_GRID(grid), toolbar, 0, 0, 1, 1);
+
+  // options for notebook
+  gtk_widget_set_hexpand (notes, TRUE);
+  gtk_widget_set_vexpand (notes, TRUE);
   gtk_grid_attach (GTK_GRID(grid), notes, 0, 1, 1, 1);
 
   gtk_container_add (GTK_CONTAINER(window), GTK_WIDGET(grid));

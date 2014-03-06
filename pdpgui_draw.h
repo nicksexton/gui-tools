@@ -33,10 +33,12 @@ void pdpgui_draw_connection_curved (cairo_t *cr,
 				    PdpguiCoords intermediate_upper);
 
 
-void pdpgui_draw_graph_axes (cairo_t *cr,
+
+void pdpgui_draw_graph_axes (cairo_t *cr, 
+			     guint window_width, guint window_height,
 			     int x_divisions, int y_divisions,
 			     double x_min, double x_max, 
-			     double y_min, double y_max);  
+			     double y_min, double y_max);
 
 
 #endif

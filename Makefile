@@ -5,7 +5,7 @@ LIBS = `pkg-config --libs gtk+-3.0`
 
 OBJECTS = lib_cairox.o
 
-BINARIES = gtk_notebook gtk_drawingarea gtk_pango_layout pdpgui_architecture
+BINARIES = gtk_notebook gtk_drawingarea gtk_pango_layout gtk_config_files pdpgui_architecture
 
 all: $(BINARIES)
 
@@ -24,6 +24,11 @@ gtk_drawingarea: gtk_drawingarea.o
 
 gtk_pango_layout: gtk_pango_layout.o lib_cairox.o
 	$(CC) -o $@ $(CFLAGS) lib_cairox.o $(LDFLAGS) gtk_pango_layout.o $(LIBS)
+
+gtk_config_files: gtk_config_files.o
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) gtk_config_files.o $(LIBS)
+
+
 
 
 # example - draws a basic network architecture inside a multi-tabbed notebook

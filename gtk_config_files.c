@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <gtk/gtk.h>
 #define CONFIG_FILE gtk_config_file.conf
 
@@ -5,10 +8,18 @@
 // callback function to read file contents
 gboolean button_clicked_process_config_file (GtkWidget *widget, gpointer data) {
 
-  printf ("button clicked\n");
+  char filename[20] = {"CONFIG_FILE"};
+  FILE *config_file;
+  char c;
 
+  config_file = fopen(filename, "r");
+  if (config_file == NULL) {
+    printf ("error! gtk_config_file.conf does not exist\n");
+    return FALSE;
+  }
+
+  
   return TRUE;
-
 }
 
 static GtkWidget* create_notepage_copper() {

@@ -2,6 +2,10 @@
 *.o
 *.ko
 
+# temporary files
+\#*
+*~
+
 # Libraries
 *.lib
 *.a

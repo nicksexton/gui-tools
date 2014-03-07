@@ -152,15 +152,56 @@ void pdpgui_draw_graph_axes (cairo_t *cr,
 				PANGOX_XALIGN_RIGHT, PANGOX_YALIGN_CENTER, 0.0);
     cairox_paint_pango_text (cr, &text_params, layout, textbuf);
 
-
   }
  
   
-
-
-  // y axis scale
 
   // g_object_unref (layout);
   // cairo_destroy(cr);
 
 }
+
+void pdpgui_plot_vector (cairo_t *cr, 
+			 guint window_width, guint window_height,
+			 PdpguiAxisDimensions * axis_dimensions,
+			 int number_datapoints, double my_data[], 
+			 PdpguiColourRgb *plot_colour
+			 ){
+  double x_offset;
+  double y_offset;
+  double x_axis_pos = window_width * AXIS_MARGIN_X;
+  double y_axis_pos = window_height * (1 - AXIS_MARGIN_Y); 
+  double axis_length_x  = window_width * (1 - 2 * AXIS_MARGIN_X);
+  double axis_length_y  = window_height * (1 - 2 * AXIS_MARGIN_Y);
+
+  // double x_scale = (axis_dimensions->x_max - axis_dimensions->x_min) / axis_length_x;
+  double y_scale = (axis_dimensions->y_max - axis_dimensions->y_min) / axis_length_y;
+
+  // set line parameters
+  cairo_set_source_rgb (cr, plot_colour->r, plot_colour->g, plot_colour->b);
+  cairo_set_line_width (cr, 2);
+
+
+  // first data point
+  x_offset = 0;
+  y_offset = (my_data[0] - axis_dimensions->y_min )/ y_scale;
+  
+  cairo_move_to (cr, 
+		 x_axis_pos, // x = 0
+		 y_axis_pos - y_offset);
+
+  int n;
+  for (n = 0; n < number_datapoints; n ++) {
+    
+    x_offset = ((double) n / number_datapoints) * axis_length_x;
+    y_offset = (my_data[n] - axis_dimensions->y_min) / y_scale;
+
+    cairo_line_to (cr, 
+		   x_axis_pos + x_offset, 
+		   y_axis_pos - y_offset);
+  }
+  cairo_stroke (cr);
+		 
+}
+
+		 

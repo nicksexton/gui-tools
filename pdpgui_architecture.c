@@ -1,7 +1,9 @@
+#include <math.h>
 #include <gtk/gtk.h>
 // #include <pango/pangocairo.h>
 #include "pdpgui_draw.h"
 #include "lib_cairox.h"
+
 
 #define WINDOW_WIDTH 600
 #define WINDOW_HEIGHT 600
@@ -116,7 +118,37 @@ void pdpgui_draw_example_graph (GtkWidget *widget, cairo_t *cr, gpointer data) {
 
   printf ("%d x %d\n", widget_width, widget_height);
 
-  pdpgui_draw_graph_axes(cr, widget_width, widget_height, 10, 10, 0.0, 200.0, 0.0, 1.0);
+  pdpgui_draw_graph_axes(cr, widget_width, widget_height, 10, 10, 0.0, 200.0, 0.0, 5.0);
+
+
+  PdpguiAxisDimensions axes = { 
+    .x_min = 0.0, 
+    .x_max = 200, 
+    .y_min = 0.0, 
+    .y_max = 5.0
+  };
+
+  PdpguiColourRgb plot_colour = { 
+    .r = 1.0, 
+    .g = 0.0, 
+    .b = 0.0 
+  };
+
+  // now construct an arbitrary vector;
+
+  double log_function[40];
+  int i;
+
+  printf ("log function: ");
+
+  for (i = 0; i < 40; i ++) {
+    log_function[i] = log (i + 1);
+    printf( "%4.2f ", log_function[i]);
+  }
+  printf ("\n");
+
+  pdpgui_plot_vector (cr, widget_width, widget_height, &axes, 40, log_function, &plot_colour);
+  
 
 
 }

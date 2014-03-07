@@ -14,6 +14,13 @@ typedef struct pdpgui_colour_rgb {
   double b;
 } PdpguiColourRgb;
 
+typedef struct pdpgui_axis_dimensions {
+  double x_min;
+  double x_max;
+  double y_min;
+  double y_max;
+} PdpguiAxisDimensions;
+
 
 void pdpgui_draw_unit (cairo_t *cr, 
 		       PdpguiCoords unit_centre, 
@@ -39,6 +46,14 @@ void pdpgui_draw_graph_axes (cairo_t *cr,
 			     int x_divisions, int y_divisions,
 			     double x_min, double x_max, 
 			     double y_min, double y_max);
+
+// plots my_data as y values, equally spaced along the x axis
+void pdpgui_plot_vector (cairo_t *cr, 
+			 guint window_width, guint window_height,
+			 PdpguiAxisDimensions * axis_dimensions,
+			 int number_datapoints, double my_data[], 
+			 PdpguiColourRgb *plot_colour
+			 );
 
 
 #endif

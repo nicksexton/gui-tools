@@ -18,6 +18,7 @@ typedef struct generic_parameter {
   char name[FIELD_SIZE];
   int data_int_1, data_int_2, data_int_3;
   double data_double_1, data_double_2, data_double_3;
+  char data_text_1[FIELD_SIZE], data_text_2[FIELD_SIZE];
 } GenericParameter;
 
 typedef struct generic_parameter_set {
@@ -25,6 +26,8 @@ typedef struct generic_parameter_set {
   GenericParameter parameter_1;
   GenericParameter parameter_2;
   GenericParameter parameter_3;
+  GenericParameter parameter_4;
+  GenericParameter parameter_5;
 
 } GenericParameterSet;
 
@@ -40,6 +43,8 @@ void init_generic_parameter (GenericParameter * param) {
   param->data_double_1 = 0.0;
   param->data_double_2 = 0.0;
   param->data_double_3 = 0.0;
+  strcpy (param->data_text_1, "");
+  strcpy (param->data_text_2, "");
 
 }
 
@@ -48,6 +53,8 @@ void init_generic_parameter_set (GenericParameterSet *param_set) {
   init_generic_parameter (&(param_set->parameter_1));
   init_generic_parameter (&(param_set->parameter_2));
   init_generic_parameter (&(param_set->parameter_3));
+  init_generic_parameter (&(param_set->parameter_4));
+  init_generic_parameter (&(param_set->parameter_5));
 
 }
 
@@ -60,6 +67,8 @@ void print_generic_parameter (GenericParameter * param) {
 	  param->data_int_1, param->data_int_2, param->data_int_3);
   printf ("Double data:\t1: %4.2f\t2: %4.2f\t 3: %4.2f\n", 
 	  param->data_double_1, param->data_double_2, param->data_double_3);
+  printf ("Text data:\t1: %s\t2: %s\n", 
+	  param->data_text_1, param->data_text_2);
 
 }
 
@@ -68,6 +77,8 @@ void print_generic_parameter_set (GenericParameterSet * param) {
   print_generic_parameter (&(param->parameter_1));
   print_generic_parameter (&(param->parameter_2));
   print_generic_parameter (&(param->parameter_3));
+  print_generic_parameter (&(param->parameter_4));
+  print_generic_parameter (&(param->parameter_5));
 
 }
 
@@ -80,6 +91,8 @@ bool pdp_file_parse_segmented_line (int max_fields,
 				    char extracted_fields[max_fields][field_size],
 				    GenericParameterSet * destination) {
   // this function is program specific
+  // for a non-example program, break these out to separate functions
+  // and put the whole thing in a separate import translator file
 
   
   // decide how to process line based on field 0
@@ -117,6 +130,30 @@ bool pdp_file_parse_segmented_line (int max_fields,
     }
     return true;
   }
+
+
+  else if (!strcmp (extracted_fields[0], "TEXT_VAR1")) {
+    
+    if (strcmp (extracted_fields[1], "") != 0) {
+      strcpy (destination->parameter_4.data_text_1, extracted_fields[1]); 
+      if (strcmp (extracted_fields[2], "") != 0) {
+	strcpy (destination->parameter_4.data_text_2, extracted_fields[2]); 
+      }
+    }
+    return true;
+  }
+
+  else if (!strcmp (extracted_fields[0], "TEXT_VAR2")) {
+    
+    if (strcmp (extracted_fields[1], "") != 0) {
+      strcpy (destination->parameter_5.data_text_1, extracted_fields[1]);
+      if (strcmp (extracted_fields[2], "") != 0) {
+	strcpy (destination->parameter_5.data_text_2, extracted_fields[2]); 
+      }
+    }
+    return true;
+  }
+
 
   return false;
 }
@@ -218,6 +255,12 @@ int main () {
 
   my_params.parameter_3.id = 3;
   strcpy (my_params.parameter_3.name, "NUMERIC_VAR3");
+
+  my_params.parameter_4.id = 4;
+  strcpy (my_params.parameter_3.name, "TEXT_VAR1");
+
+  my_params.parameter_5.id = 5;
+  strcpy (my_params.parameter_3.name, "TEXT_VAR2");
 
 
   printf ("starting parameter settings:\n");

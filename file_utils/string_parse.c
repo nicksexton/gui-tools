@@ -1,6 +1,5 @@
 /* TODO:
    fix parsing to use sscanf or similar to assign numeric variables 
-   fix data processing so that it doesn't mindlessly print out 10 fields
    fix parsing so that space or comma can also be used as a delimiter */
 
 
@@ -14,16 +13,116 @@
 #include <stdbool.h>
 #include <string.h>
 
+typedef struct generic_parameter {
+  int id;
+  char name[FIELD_SIZE];
+  int data_int_1, data_int_2, data_int_3;
+  double data_double_1, data_double_2, data_double_3;
+} GenericParameter;
 
-/*
-void pdp_file_parse_line (*char input_line) {
-  // this function is program specific
+typedef struct generic_parameter_set {
 
+  GenericParameter parameter_1;
+  GenericParameter parameter_2;
+  GenericParameter parameter_3;
+
+} GenericParameterSet;
+
+
+void init_generic_parameter (GenericParameter * param) {
+
+  // init default parameter settings here
+  param->id = 0;
+  strcpy (param->name, "blank");
+  param->data_int_1 = 0;
+  param->data_int_2 = 0;
+  param->data_int_3 = 0;
+  param->data_double_1 = 0.0;
+  param->data_double_2 = 0.0;
+  param->data_double_3 = 0.0;
 
 }
-*/
 
-int pdp_file_parse_new_line (FILE *input_file, 
+void init_generic_parameter_set (GenericParameterSet *param_set) {
+
+  init_generic_parameter (&(param_set->parameter_1));
+  init_generic_parameter (&(param_set->parameter_2));
+  init_generic_parameter (&(param_set->parameter_3));
+
+}
+
+
+
+void print_generic_parameter (GenericParameter * param) {
+
+  printf ("\nParameter %s, id %d:\n", param->name, param->id);
+  printf ("Int data:\t1: %d\t2: %d\t 3: %d\n", 
+	  param->data_int_1, param->data_int_2, param->data_int_3);
+  printf ("Double data:\t1: %4.2f\t2: %4.2f\t 3: %4.2f\n", 
+	  param->data_double_1, param->data_double_2, param->data_double_3);
+
+}
+
+void print_generic_parameter_set (GenericParameterSet * param) {
+
+  print_generic_parameter (&(param->parameter_1));
+  print_generic_parameter (&(param->parameter_2));
+  print_generic_parameter (&(param->parameter_3));
+
+}
+
+
+
+
+
+bool pdp_file_parse_segmented_line (int max_fields, 
+				    int field_size, 
+				    char extracted_fields[max_fields][field_size],
+				    GenericParameterSet * destination) {
+  // this function is program specific
+
+  
+  // decide how to process line based on field 0
+  if (strcmp (extracted_fields[0], "NUMERIC_VAR1")) {
+    
+    if (strcmp (extracted_fields[1], "") != 0) {
+      destination->parameter_1.data_int_1 = atoi (extracted_fields[1]);
+      if (strcmp (extracted_fields[2], "") != 0) {
+	destination->parameter_1.data_int_2 = atoi (extracted_fields[2]);
+      }
+    }
+    return true;
+  }
+
+
+  else if (strcmp (extracted_fields[0], "NUMERIC_VAR2")) {
+    
+    if (strcmp (extracted_fields[1], "") != 0) {
+      destination->parameter_1.data_int_1 = atoi (extracted_fields[1]);
+      if (strcmp (extracted_fields[2], "") != 0) {
+	destination->parameter_1.data_int_2 = atoi (extracted_fields[2]);
+      }
+    }
+    return true;
+  }
+
+
+  else if (strcmp (extracted_fields[0], "NUMERIC_VAR3")) {
+    
+    if (strcmp (extracted_fields[1], "") != 0) {
+      destination->parameter_1.data_int_1 = atoi (extracted_fields[1]);
+      if (strcmp (extracted_fields[2], "") != 0) {
+	destination->parameter_1.data_int_2 = atoi (extracted_fields[2]);
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
+
+int pdp_file_segment_new_line (FILE *input_file, 
 			     int max_fields, 
 			     int field_size, 
 			     char extracted_fields[max_fields][field_size]) {
@@ -72,7 +171,12 @@ int pdp_file_parse_new_line (FILE *input_file,
     
     f = 0;
     while (ptr < ptr_eol) {
+
+      // This line does not work very well
+      // field delimiters - tabs, newlines
       sscanf (ptr, "%50[^\t\n]%n", extracted_fields[f], &n);
+
+
       ptr += n;
       if ((*ptr != '\t') && (*ptr != '\n')) break; // no delimiter, end of file reached?
       // need to handle condition here where \t is followed by a \n 
@@ -89,6 +193,8 @@ int pdp_file_parse_new_line (FILE *input_file,
 }
 
 
+
+
 int main () {
 
 
@@ -101,12 +207,30 @@ int main () {
     return 1;
   }
 
-  char fields [MAX_FIELDS][FIELD_SIZE];
+  GenericParameterSet my_params;
+  init_generic_parameter_set (&my_params);
+  
+  my_params.parameter_1.id = 1;
+  strcpy (my_params.parameter_1.name, "NUMERIC_VAR1");
 
+  my_params.parameter_2.id = 2;
+  strcpy (my_params.parameter_2.name, "NUMERIC_VAR2");
+
+  my_params.parameter_3.id = 3;
+  strcpy (my_params.parameter_3.name, "NUMERIC_VAR3");
+
+
+  printf ("starting parameter settings:\n");
+  print_generic_parameter_set (&my_params);
+  
+
+
+  char fields [MAX_FIELDS][FIELD_SIZE];
+  int line_counter = 0;
   bool more_lines = true;
   while (more_lines) {
-
-    fields_extracted = pdp_file_parse_new_line (config_file, 
+    line_counter ++;
+    fields_extracted = pdp_file_segment_new_line (config_file, 
 						MAX_FIELDS, 
 						FIELD_SIZE, 
 						fields);
@@ -124,19 +248,33 @@ int main () {
     }
 
     default: {
+      printf ("processing line %d\t", line_counter);
       // process the data
       if (fields_extracted > 0) { // was any data extracted?
 	// if so, process the data
-	int f;
-	for (f = 0; f < fields_extracted; f++) {
-	  printf ("%s\n", fields[f]);
+
+	if (pdp_file_parse_segmented_line (MAX_FIELDS, 
+					   FIELD_SIZE, 
+					   fields,
+					   &my_params)) {
+	  printf ("line imported\n");
 	}
+	else {
+	  printf ("warning! line not understood, not imported\n");
+	}
+
 	// else do nothing
+      }
+      else {
+	printf ("blank line or comment, ignoring\n");
       }
     }
     }
 
   }
+
+  printf ("new parameter settings:\n");
+  print_generic_parameter_set (&my_params);
 
   return 0;
 

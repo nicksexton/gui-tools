@@ -83,7 +83,7 @@ bool pdp_file_parse_segmented_line (int max_fields,
 
   
   // decide how to process line based on field 0
-  if (strcmp (extracted_fields[0], "NUMERIC_VAR1")) {
+  if (!strcmp (extracted_fields[0], "NUMERIC_VAR1")) {
     
     if (strcmp (extracted_fields[1], "") != 0) {
       destination->parameter_1.data_int_1 = atoi (extracted_fields[1]);
@@ -95,24 +95,24 @@ bool pdp_file_parse_segmented_line (int max_fields,
   }
 
 
-  else if (strcmp (extracted_fields[0], "NUMERIC_VAR2")) {
+  else if (!strcmp (extracted_fields[0], "NUMERIC_VAR2")) {
     
     if (strcmp (extracted_fields[1], "") != 0) {
-      destination->parameter_1.data_int_1 = atoi (extracted_fields[1]);
+      destination->parameter_2.data_int_1 = atoi (extracted_fields[1]);
       if (strcmp (extracted_fields[2], "") != 0) {
-	destination->parameter_1.data_int_2 = atoi (extracted_fields[2]);
+	destination->parameter_2.data_int_2 = atoi (extracted_fields[2]);
       }
     }
     return true;
   }
 
 
-  else if (strcmp (extracted_fields[0], "NUMERIC_VAR3")) {
+  else if (!strcmp (extracted_fields[0], "NUMERIC_VAR3")) {
     
     if (strcmp (extracted_fields[1], "") != 0) {
-      destination->parameter_1.data_int_1 = atoi (extracted_fields[1]);
+      destination->parameter_3.data_int_1 = atoi (extracted_fields[1]);
       if (strcmp (extracted_fields[2], "") != 0) {
-	destination->parameter_1.data_int_2 = atoi (extracted_fields[2]);
+	destination->parameter_3.data_int_2 = atoi (extracted_fields[2]);
       }
     }
     return true;
@@ -228,6 +228,7 @@ int main () {
   char fields [MAX_FIELDS][FIELD_SIZE];
   int line_counter = 0;
   bool more_lines = true;
+
   while (more_lines) {
     line_counter ++;
     fields_extracted = pdp_file_segment_new_line (config_file, 

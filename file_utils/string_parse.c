@@ -1,6 +1,7 @@
 #define FIELDS 10
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 int main () {
@@ -27,29 +28,47 @@ int main () {
   }
 
 
-  fgets(input_line, 255, config_file);
+  while (1) {
+        
+    fgets(input_line, 255, config_file);
 
 
+    ptr = input_line;
+    for (f = 0; f < FIELDS; f ++) {
+      sscanf (ptr, "%50[^\t\n]%n", fields[f], &n);
+      ptr += n;
+      if ((*ptr != '\t') && (*ptr != '\n')) break; // no delimiter, end of file reached?
+      // need to handle condition here where \t is followed by a \n 
+      
+      ptr += 1; // skip the delimiter
+      while ((*ptr == '\t') || (*ptr == '\n')) {
+	ptr += 1; 
+	f++;
+      }
+    }
 
-  ptr = input_line;
-  for (f = 0; f < FIELDS; f ++) {
-    sscanf (ptr, "%50[^\t\n]%n", fields[f], &n);
-    ptr += n;
-    if ((*ptr != '\t') && (*ptr != '\n')) break; // no delimiter, end of file reached?
-    // need to handle condition here where \t is followed by a \n 
 
-    ptr += 1; // skip the delimiter
-    while ((*ptr == '\t') || (*ptr == '\n')) {
-      ptr += 1; 
-      f++;
+    // now print the data
+    for (f = 0; f < FIELDS; f++) {
+      printf ("%s\n", fields[f]);
+    }
+
+    // handle break conditions
+
+    if (feof(config_file)) {
+      //  printf ("end of file reached, all is good\n");
+      break;
+    }
+
+  
+    if (ferror (config_file)) {
+      printf ("a file read error occurred, exiting\n");
+      exit (EXIT_FAILURE);
+      
     }
   }
 
 
-  // now print the data
-  for (f = 0; f < FIELDS; f++) {
-    printf ("%s\n", fields[f]);
-  }
 
   return 0;
 

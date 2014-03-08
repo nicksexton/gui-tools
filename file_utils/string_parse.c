@@ -1,8 +1,17 @@
+/* TODO:
+   fix parsing to use sscanf or similar to assign numeric variables 
+   fix data processing so that it doesn't mindlessly print out 10 fields
+   fix parsing so that space or comma can also be used as a delimiter */
+
+
 #define FIELDS 10
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+
 
 int main () {
 

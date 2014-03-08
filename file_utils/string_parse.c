@@ -19,8 +19,12 @@ int main () {
 
 
   char input_line [512];
-  char *ptr;
+  char *ptr, *ptr_eol; // current position, end of line
+  //  char *ptr_comment;
   char fields [10][51];
+  char *comment_marker = "#";
+
+
   int n, f;
 
   for (f = 0; f < FIELDS; f++) {
@@ -30,27 +34,36 @@ int main () {
 
   while (1) {
         
-    fgets(input_line, 255, config_file);
-
-
+    fgets(input_line, sizeof input_line, config_file);
     ptr = input_line;
-    for (f = 0; f < FIELDS; f ++) {
+
+    // check if line contains a comment, position end of line pointer at the comment
+    ptr_eol = strstr(input_line, comment_marker);
+    if (ptr_eol == NULL)
+      ptr_eol = ptr + strlen(input_line);
+    
+    
+    f = 0;
+    while (ptr < ptr_eol) {
       sscanf (ptr, "%50[^\t\n]%n", fields[f], &n);
       ptr += n;
       if ((*ptr != '\t') && (*ptr != '\n')) break; // no delimiter, end of file reached?
       // need to handle condition here where \t is followed by a \n 
       
+
       ptr += 1; // skip the delimiter
       while ((*ptr == '\t') || (*ptr == '\n')) {
 	ptr += 1; 
 	f++;
       }
+      f ++;
     }
 
-
-    // now print the data
-    for (f = 0; f < FIELDS; f++) {
-      printf ("%s\n", fields[f]);
+    if (f > 0) { // was any data extracted?
+      // if so, process the data
+      for (f = 0; f < FIELDS; f++) {
+	printf ("%s\n", fields[f]);
+      }
     }
 
     // handle break conditions

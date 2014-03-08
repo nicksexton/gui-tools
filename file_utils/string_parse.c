@@ -4,7 +4,8 @@
    fix parsing so that space or comma can also be used as a delimiter */
 
 
-#define FIELDS 10
+#define MAX_FIELDS 10
+#define MAX_LINE_LENGTH 512
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,16 +28,16 @@ int main () {
 
 
 
-  char input_line [512];
+  char input_line [MAX_LINE_LENGTH];
   char *ptr, *ptr_eol; // current position, end of line
   //  char *ptr_comment;
-  char fields [10][51];
+  char fields [MAX_FIELDS][51];
   char *comment_marker = "#";
 
 
   int n, f;
 
-  for (f = 0; f < FIELDS; f++) {
+  for (f = 0; f < MAX_FIELDS; f++) {
     strcpy(fields[f], "");
   }
 
@@ -70,7 +71,7 @@ int main () {
 
     if (f > 0) { // was any data extracted?
       // if so, process the data
-      for (f = 0; f < FIELDS; f++) {
+      for (f = 0; f < MAX_FIELDS; f++) {
 	printf ("%s\n", fields[f]);
       }
     }

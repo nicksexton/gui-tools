@@ -12,24 +12,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-
-typedef struct generic_parameter {
-  int id;
-  char name[FIELD_SIZE];
-  int data_int_1, data_int_2, data_int_3;
-  double data_double_1, data_double_2, data_double_3;
-  char data_text_1[FIELD_SIZE], data_text_2[FIELD_SIZE];
-} GenericParameter;
-
-typedef struct generic_parameter_set {
-
-  GenericParameter parameter_1;
-  GenericParameter parameter_2;
-  GenericParameter parameter_3;
-  GenericParameter parameter_4;
-  GenericParameter parameter_5;
-
-} GenericParameterSet;
+#include "string_parse.h"
 
 
 void init_generic_parameter (GenericParameter * param) {
@@ -230,46 +213,14 @@ int pdp_file_segment_new_line (FILE *input_file,
 }
 
 
-
-
-int main () {
-
-
-  FILE *config_file;
-  int fields_extracted;
-
-  config_file = fopen("gtk_config_file.conf", "r");
-  if (config_file == NULL) {
-    printf ("error! gtk_config_file.conf not opened!\n");
-    return 1;
-  }
-
-  GenericParameterSet my_params;
-  init_generic_parameter_set (&my_params);
-  
-  my_params.parameter_1.id = 1;
-  strcpy (my_params.parameter_1.name, "NUMERIC_VAR1");
-
-  my_params.parameter_2.id = 2;
-  strcpy (my_params.parameter_2.name, "NUMERIC_VAR2");
-
-  my_params.parameter_3.id = 3;
-  strcpy (my_params.parameter_3.name, "NUMERIC_VAR3");
-
-  my_params.parameter_4.id = 4;
-  strcpy (my_params.parameter_3.name, "TEXT_VAR1");
-
-  my_params.parameter_5.id = 5;
-  strcpy (my_params.parameter_3.name, "TEXT_VAR2");
-
-
-  printf ("starting parameter settings:\n");
-  print_generic_parameter_set (&my_params);
-  
+// example code to test string_parse functions 
+// change GenericParameterSet type to a program-specific struct containing parameters
+int parse_file (FILE *config_file, GenericParameterSet *my_params) {
 
 
   char fields [MAX_FIELDS][FIELD_SIZE];
   int line_counter = 0;
+  int fields_extracted;
   bool more_lines = true;
 
   while (more_lines) {
@@ -300,7 +251,7 @@ int main () {
 	if (pdp_file_parse_segmented_line (MAX_FIELDS, 
 					   FIELD_SIZE, 
 					   fields,
-					   &my_params)) {
+					   my_params)) {
 	  printf ("line imported\n");
 	}
 	else {
@@ -317,9 +268,50 @@ int main () {
 
   }
 
+  return 0;
+}
+
+int main () {
+
+
+  FILE *config_file;
+
+  config_file = fopen("gtk_config_file.conf", "r");
+  if (config_file == NULL) {
+    printf ("error! gtk_config_file.conf not opened!\n");
+    return 1;
+  }
+
+  GenericParameterSet my_params;
+  init_generic_parameter_set (&my_params);
+  
+  my_params.parameter_1.id = 1;
+  strcpy (my_params.parameter_1.name, "NUMERIC_VAR1");
+
+  my_params.parameter_2.id = 2;
+  strcpy (my_params.parameter_2.name, "NUMERIC_VAR2");
+
+  my_params.parameter_3.id = 3;
+  strcpy (my_params.parameter_3.name, "NUMERIC_VAR3");
+
+  my_params.parameter_4.id = 4;
+  strcpy (my_params.parameter_3.name, "TEXT_VAR1");
+
+  my_params.parameter_5.id = 5;
+  strcpy (my_params.parameter_3.name, "TEXT_VAR2");
+
+
+  printf ("starting parameter settings:\n");
+  print_generic_parameter_set (&my_params);
+  
+
+  parse_file (config_file, &my_params);
+
+
   printf ("new parameter settings:\n");
   print_generic_parameter_set (&my_params);
 
   return 0;
 
 }
+

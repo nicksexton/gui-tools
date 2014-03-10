@@ -1,9 +1,11 @@
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <gtk/gtk.h>
 #define CONFIG_FILE gtk_config_file.conf
-
+#define FILENAME_MAX_LENGTH 40
 
 // callback function to read file contents
 gboolean button_clicked_process_config_file (GtkWidget *widget, gpointer data) {
@@ -22,20 +24,53 @@ gboolean button_clicked_process_config_file (GtkWidget *widget, gpointer data) {
   return TRUE;
 }
 
+void select_file (GtkComboBoxText *widget, gpointer data) {
+
+  GtkComboBoxText *combo_box = widget;
+  // char *tmp[FILENAME_MAX_LENGTH];
+
+  gchar *filename = gtk_combo_box_text_get_active_text (combo_box);
+
+
+    // just print filename for now
+  g_print ("file %s selected", filename);
+  gtk_label_set_text(GTK_LABEL(data), filename);
+
+  g_free (filename);
+
+}
+
+
+
 static GtkWidget* create_notepage_copper() {
 
   GtkWidget *grid;
-  GtkWidget *label1;
+  GtkWidget *label1, *label2;
+  GtkWidget *file_select;
 
-  label1 = gtk_label_new("Copper is an essential trace nutrient to all high \
-plants and animals. In animals, including humans, it is found primarily in \
-the bloodstream, as a co-factor in various enzymes, and in copper-based pigments. \
-However, in sufficient amounts, copper can be poisonous and even fatal to organisms.");
+  char filename[FILENAME_MAX_LENGTH];
+  strcpy (filename, "no file selected");
 
+  label1 = gtk_label_new("Select config file");
   gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
+
+  label2 = gtk_label_new(filename);
+
+  file_select = gtk_combo_box_text_new();
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
+				 "gtk_config_file.conf");
+
+
+  g_signal_connect (file_select, "changed", G_CALLBACK(select_file), (gpointer)label2);
+
+
+
 
   grid = gtk_grid_new();
   gtk_grid_attach (GTK_GRID(grid), label1, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), file_select, 0, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), label2, 0, 2, 1, 1);
+
   gtk_widget_set_vexpand (GTK_WIDGET(grid), TRUE);
 
   gtk_widget_show_all(grid);

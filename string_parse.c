@@ -2,12 +2,6 @@
    fix parsing to use sscanf or similar to assign numeric variables 
    fix parsing so that space or comma can also be used as a delimiter */
 
-
-#define MAX_FIELDS 10
-#define FIELD_SIZE 51
-// MAX_LINE_LENGTH should be MAX_FIELDS * FIELD_SIZE
-#define MAX_LINE_LENGTH 512
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>

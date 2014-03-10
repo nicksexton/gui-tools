@@ -1,6 +1,12 @@
 #ifndef string_parse_h
 #define string_parse_h
 
+#define MAX_FIELDS 10
+#define FIELD_SIZE 51
+// MAX_LINE_LENGTH should be MAX_FIELDS * FIELD_SIZE
+#define MAX_LINE_LENGTH 512
+
+
 #include <stdbool.h>
 
 typedef struct generic_parameter {

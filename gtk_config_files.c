@@ -4,10 +4,42 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+#include "string_parse.h"
+
 #define CONFIG_FILE gtk_config_file.conf
 #define FILENAME_MAX_LENGTH 40
 
+typedef struct file_data {
+  GtkWidget * filename; // store filename in the text of a gtk widget
+  FILE * fp; // file pointer itself
+  GenericParameterSet * data; // from string_parse.h
+} FileData;
+
 // callback function to read file contents
+gboolean load_from_file (GtkWidget *widget, gpointer file_info) {
+
+  // function called with label, text contains filename
+
+  file_info = (FileData *)file_info;
+
+  FILE *config_file;
+  char filename[FILENAME_MAX_LENGTH];
+  strcpy (filename, gtk_label_get_text( file_info->filename ));
+
+  file_info->fp = fopen(filename, "r");
+  if (file_info->fp == NULL) {
+    printf ("error! gtk_config_file.conf does not exist\n");
+    return FALSE;
+  }
+  else printf ("success! config file opened.\n");
+
+  return TRUE;
+}
+
+
+// callback function to read file contents
+// NB function now defunct! remember to remove button from toolbar
+/*
 gboolean button_clicked_process_config_file (GtkWidget *widget, gpointer data) {
 
   char filename[20] = {"CONFIG_FILE"};
@@ -19,10 +51,10 @@ gboolean button_clicked_process_config_file (GtkWidget *widget, gpointer data) {
     printf ("error! gtk_config_file.conf does not exist\n");
     return FALSE;
   }
-
   
   return TRUE;
 }
+*/
 
 void select_file (GtkComboBoxText *widget, gpointer data) {
 
@@ -44,9 +76,12 @@ void select_file (GtkComboBoxText *widget, gpointer data) {
 static GtkWidget* create_notepage_fileselect() {
 
   GtkWidget *grid;
-  GtkWidget *label1, *label2;
+  GtkWidget *label1; // *label2;
   GtkWidget *file_select;
   GtkWidget *button_process_configfile;
+
+  FileData config_file; // struct containing pointers to relevant file data
+  config_file.fp = NULL;
 
   char filename[FILENAME_MAX_LENGTH];
   strcpy (filename, "no file selected");
@@ -56,20 +91,23 @@ static GtkWidget* create_notepage_fileselect() {
 
   // label 2 contains the filename of any selected file
   // use gtk_label_get_text() to access 
-  label2 = gtk_label_new(filename);
+  config_file.filename = gtk_label_new(filename);
 
   file_select = gtk_combo_box_text_new();
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
 				 "gtk_config_file.conf");
   g_signal_connect (file_select, "changed", G_CALLBACK(select_file), (gpointer)label2);
 
+  // aesthetic: give this a standard icon
   button_process_configfile = gtk_button_new_with_label ("Load from file");
+  g_signal_connect (button_process_configfile, "clicked", 
+		    G_CALLBACK(load_from_file), ((gpointer)(&config_file)));
 
 
   grid = gtk_grid_new();
   gtk_grid_attach (GTK_GRID(grid), label1, 0, 0, 1, 1);
   gtk_grid_attach (GTK_GRID(grid), file_select, 0, 1, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid), label2, 0, 2, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), config_file.filename, 0, 2, 1, 1);
   gtk_grid_attach (GTK_GRID(grid), button_process_configfile, 0, 3, 1, 1);
 
   gtk_widget_set_vexpand (GTK_WIDGET(grid), TRUE);
@@ -106,10 +144,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
 
   tool_item = gtk_tool_button_new_from_stock (GTK_STOCK_REFRESH);
-  g_signal_connect (G_OBJECT(tool_item), 
-		    "clicked", 
-		    G_CALLBACK(button_clicked_process_config_file), 
-		    NULL);
+  // g_signal_connect (G_OBJECT(tool_item), "clicked", 
+  //                   G_CALLBACK(button_clicked_process_config_file), NULL);
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar), tool_item, position ++);
 
   tool_item = gtk_separator_tool_item_new();

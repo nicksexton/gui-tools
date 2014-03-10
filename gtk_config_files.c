@@ -10,7 +10,7 @@ gboolean button_clicked_process_config_file (GtkWidget *widget, gpointer data) {
 
   char filename[20] = {"CONFIG_FILE"};
   FILE *config_file;
-  char c;
+  // char c;
 
   config_file = fopen(filename, "r");
   if (config_file == NULL) {

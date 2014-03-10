@@ -271,6 +271,7 @@ int parse_file (FILE *config_file, GenericParameterSet *my_params) {
   return 0;
 }
 
+/*
 int main () {
 
 
@@ -315,3 +316,4 @@ int main () {
 
 }
 
+*/

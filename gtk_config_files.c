@@ -13,7 +13,6 @@ typedef struct file_data {
   GtkWidget * filename_label; // store filename in the text of a gtk widget
   char filename[FILENAME_MAX_LENGTH];
 
-  // GtkWidget * filename; // store filename in the text of a gtk widget
   FILE * fp; // file pointer itself
   GenericParameterSet * data; // from string_parse.h
 } FileData;
@@ -22,11 +21,6 @@ typedef struct file_data {
 gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
 
 
-  // printf ("config file: %s", gtk_label_get_text(GTK_LABEL(file_info->filename)));
-  // char config_filename[40];
-  // strcpy (config_filename, gtk_label_get_text(GTK_LABEL(file_info->filename)));
-
-  // file_info->fp = fopen(gtk_label_get_text(GTK_LABEL(file_info->filename)), "r");
   file_info->fp = fopen(file_info->filename, "r");
   if (file_info->fp == NULL) {
     printf ("error! gtk_config_file.conf does not exist\n");
@@ -37,25 +31,6 @@ gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
   return TRUE;
 }
 
-
-// callback function to read file contents
-// NB function now defunct! remember to remove button from toolbar
-/*
-gboolean button_clicked_process_config_file (GtkWidget *widget, gpointer data) {
-
-  char filename[20] = {"CONFIG_FILE"};
-  FILE *config_file;
-  // char c;
-
-  config_file = fopen(filename, "r");
-  if (config_file == NULL) {
-    printf ("error! gtk_config_file.conf does not exist\n");
-    return FALSE;
-  }
-  
-  return TRUE;
-}
-*/
 
 void select_file (GtkComboBoxText *widget, FileData * config_file) {
 
@@ -85,19 +60,18 @@ static GtkWidget* create_notepage_fileselect() {
 
 
   FileData *config_file; // struct containing pointers to relevant file data
-  config_file = g_malloc (sizeof(FileData));
- 
+  config_file = g_malloc (sizeof(FileData)); 
   config_file->fp = NULL;
-  
+  // init_generic_parameter_set(config_file->data);  
+
   char filename[FILENAME_MAX_LENGTH];
   strcpy (filename, "no file selected");
+  config_file->filename_label = gtk_label_new(filename);
+
+
 
   label1 = gtk_label_new("Select config file");
-  gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
-  
-  // label 2 contains the filename of any selected file
-  // use gtk_label_get_text() to access 
-  config_file->filename_label = gtk_label_new(filename);
+  gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);  
   
   file_select = gtk_combo_box_text_new();
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
@@ -108,7 +82,6 @@ static GtkWidget* create_notepage_fileselect() {
   button_process_configfile = gtk_button_new_with_label ("Load from file");
   g_signal_connect (button_process_configfile, "clicked", 
 		    G_CALLBACK(load_from_file), (gpointer)(config_file));
-
 
   grid = gtk_grid_new();
   gtk_grid_attach (GTK_GRID(grid), label1, 0, 0, 1, 1);
@@ -121,7 +94,6 @@ static GtkWidget* create_notepage_fileselect() {
   gtk_widget_show_all(grid);
 
   // destroy config_file pointer here to prevent memory leak?
-  g_free (config_file)
   return (grid);
   
 }
@@ -153,8 +125,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
 
   tool_item = gtk_tool_button_new_from_stock (GTK_STOCK_REFRESH);
-  // g_signal_connect (G_OBJECT(tool_item), "clicked", 
-  //                   G_CALLBACK(button_clicked_process_config_file), NULL);
+
   gtk_toolbar_insert(GTK_TOOLBAR(toolbar), tool_item, position ++);
 
   tool_item = gtk_separator_tool_item_new();

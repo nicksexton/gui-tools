@@ -11,22 +11,20 @@
 
 typedef struct file_data {
   GtkWidget * filename; // store filename in the text of a gtk widget
+  // char filename[FILENAME_MAX_LENGTH];
   FILE * fp; // file pointer itself
   GenericParameterSet * data; // from string_parse.h
 } FileData;
 
 // callback function to read file contents
-gboolean load_from_file (GtkWidget *widget, gpointer file_info) {
+gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
 
-  // function called with label, text contains filename
 
-  file_info = (FileData *)file_info;
+  // printf ("config file: %s", gtk_label_get_text(GTK_LABEL(file_info->filename)));
+  char config_filename[40];
+  strcpy (config_filename, gtk_label_get_text(GTK_LABEL(file_info->filename)));
 
-  FILE *config_file;
-  char filename[FILENAME_MAX_LENGTH];
-  strcpy (filename, gtk_label_get_text( file_info->filename ));
-
-  file_info->fp = fopen(filename, "r");
+  // file_info->fp = fopen(gtk_label_get_text(GTK_LABEL(file_info->filename)), "r");
   if (file_info->fp == NULL) {
     printf ("error! gtk_config_file.conf does not exist\n");
     return FALSE;
@@ -96,12 +94,12 @@ static GtkWidget* create_notepage_fileselect() {
   file_select = gtk_combo_box_text_new();
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
 				 "gtk_config_file.conf");
-  g_signal_connect (file_select, "changed", G_CALLBACK(select_file), (gpointer)label2);
+  g_signal_connect (file_select, "changed", G_CALLBACK(select_file), (gpointer)(config_file.filename) );
 
   // aesthetic: give this a standard icon
   button_process_configfile = gtk_button_new_with_label ("Load from file");
   g_signal_connect (button_process_configfile, "clicked", 
-		    G_CALLBACK(load_from_file), ((gpointer)(&config_file)));
+		    G_CALLBACK(load_from_file), (gpointer)(&config_file));
 
 
   grid = gtk_grid_new();

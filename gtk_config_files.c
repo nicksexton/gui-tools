@@ -19,6 +19,8 @@ typedef struct file_data {
 } FileData;
 
 
+
+
 // callback function to read file contents
 gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
 
@@ -29,6 +31,8 @@ gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
   }
   else {
     printf ("success! config file opened.\n");
+
+    parse_file (file_info->fp, file_info->data);
 
     fclose(file_info->fp);
     printf ("success! config file closed.\n");
@@ -85,7 +89,7 @@ static GtkWidget* display_generic_parameter_data (FileData *config_file) {
   param2_2 = gtk_label_new (textbuf);
 
   grid = gtk_grid_new();
-
+  
   gtk_grid_attach (GTK_GRID(grid), param1_name, 0, 0, 1, 1);
   gtk_grid_attach (GTK_GRID(grid), param2_name, 0, 1, 1, 1);
 
@@ -95,6 +99,9 @@ static GtkWidget* display_generic_parameter_data (FileData *config_file) {
   gtk_grid_attach (GTK_GRID(grid), param1_2, 2, 0, 1, 1);
   gtk_grid_attach (GTK_GRID(grid), param2_2, 2, 1, 1, 1);
 
+  gtk_grid_set_column_spacing (GTK_GRID(grid), 10);
+  gtk_widget_set_hexpand (grid, TRUE);
+  gtk_widget_set_size_request (grid, 400, 400);
 
   return (grid);
 }
@@ -111,18 +118,13 @@ static void destroy_notepage_fileselect(GtkWidget *notepage_fs, FileData *config
 }
 
 
-static GtkWidget* create_notepage_fileselect() {
 
-  GtkWidget *grid;
-  GtkWidget *label1; // *label2;
-  GtkWidget *file_select;
-  GtkWidget *button_process_configfile;
+FileData *init_config_file (){
 
   // first create memory for the file pointer
   FileData *config_file; // struct containing pointers to relevant file data
   config_file = g_malloc (sizeof(FileData)); 
   config_file->fp = NULL;
-
 
   char filename[FILENAME_MAX_LENGTH];
   strcpy (filename, "no file selected");
@@ -133,6 +135,19 @@ static GtkWidget* create_notepage_fileselect() {
       // in production version, data should not be a member of the file pointer as 
       // we want it to persist
 
+  return config_file;
+}
+
+
+static GtkWidget* create_notepage_fileselect() {
+
+  GtkWidget *grid_main;
+  GtkWidget *grid_controls;
+  GtkWidget *label1; // *label2;
+  GtkWidget *file_select;
+  GtkWidget *button_process_configfile;
+  
+  FileData * config_file = init_config_file();
 
   label1 = gtk_label_new("Select config file");
   gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
@@ -147,26 +162,30 @@ static GtkWidget* create_notepage_fileselect() {
   g_signal_connect (button_process_configfile, "clicked", 
 		    G_CALLBACK(load_from_file), (gpointer)(config_file));
 
-  grid = gtk_grid_new();
-  gtk_grid_attach (GTK_GRID(grid), label1, 0, 0, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid), file_select, 0, 1, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid), config_file->filename_label, 0, 2, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid), button_process_configfile, 0, 3, 1, 1);
+  grid_main = gtk_grid_new();
+  grid_controls = gtk_grid_new();
+
+  gtk_grid_attach (GTK_GRID(grid_controls), label1, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid_controls), file_select, 0, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid_controls), config_file->filename_label, 0, 2, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid_controls), button_process_configfile, 0, 3, 1, 1);
+  //  gtk_widget_set_vexpand (GTK_WIDGET(grid_controls), TRUE);
   
-  gtk_grid_attach (GTK_GRID(grid), display_generic_parameter_data(config_file), 1, 0, 1, 4);
+  gtk_grid_attach (GTK_GRID(grid_main), grid_controls, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid_main), display_generic_parameter_data(config_file), 1, 0, 1, 1);
+  gtk_widget_set_hexpand (GTK_WIDGET(grid_main), TRUE);
 
-  gtk_widget_set_vexpand (GTK_WIDGET(grid), TRUE);
 
 
-  
-  gtk_widget_show_all(grid);
 
-  g_signal_connect (G_OBJECT(grid), "destroy", 
+  gtk_widget_show_all(grid_main);
+
+  g_signal_connect (G_OBJECT(grid_main), "destroy", 
 		    G_CALLBACK (destroy_notepage_fileselect), 
 		    (gpointer)config_file);
 
   // free config_file pointer here to prevent memory leak?
-  return (grid);
+  return (grid_main);
   
 }
 

@@ -58,14 +58,25 @@ static void populate_tree_model (GtkTreeStore * store) {
 
 
 }
-/*
+
+
 // selection handling
 // prototype for selection handler callback
 static void tree_selection_changed_cb (GtkTreeSelection *selection, gpointer data) {
 
+  GtkTreeIter iter;
+  GtkTreeModel *model;
+  gchar *author;
+
+  if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+    gtk_tree_model_get (model, &iter, AUTHOR_COLUMN, &author, -1);
+    g_print ("You selected a book by %s\n", author);
+    g_free (author);
+  }
 
 }
-*/
+
+
 
 // returns a Treestore 
 static GtkWidget * create_treestore () {
@@ -119,6 +130,15 @@ static GtkWidget * create_treestore () {
 						     NULL);
 
   gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+
+
+  // set up the selection handler
+  GtkTreeSelection *select;
+
+  select = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree));
+  gtk_tree_selection_set_mode (select, GTK_SELECTION_SINGLE);
+  g_signal_connect (G_OBJECT(select), "changed", G_CALLBACK(tree_selection_changed_cb), NULL);
 
   return tree;
 

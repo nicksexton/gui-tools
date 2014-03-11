@@ -22,8 +22,8 @@ pdp objects (eg drawing units, drawing connections, etc)
 
 string_parse.c - library of functions for reading config files and getting their data out
 into a set of C data structures. Some functions should be customised for program-specific
-data. NOTE that important program-specific settings (eg., parameter names) are hard coded 
-in string_parse.c
+data. NOTE that important program-specific settings (eg., parameter names) are currently 
+hard coded in string_parse.c
 
 
 gtk_config_files - example code for a gui which uses string_parse library to read parameter 

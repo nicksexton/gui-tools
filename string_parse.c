@@ -33,6 +33,23 @@ void init_generic_parameter_set (GenericParameterSet *param_set) {
   init_generic_parameter (&(param_set->parameter_4));
   init_generic_parameter (&(param_set->parameter_5));
 
+
+  param_set->parameter_1.id = 1;
+  strcpy (param_set->parameter_1.name, "NUMERIC_VAR1");
+
+  param_set->parameter_2.id = 2;
+  strcpy (param_set->parameter_2.name, "NUMERIC_VAR2");
+
+  param_set->parameter_3.id = 3;
+  strcpy (param_set->parameter_3.name, "NUMERIC_VAR3");
+
+  param_set->parameter_4.id = 4;
+  strcpy (param_set->parameter_3.name, "TEXT_VAR1");
+
+  param_set->parameter_5.id = 5;
+  strcpy (param_set->parameter_3.name, "TEXT_VAR2");
+
+
 }
 
 
@@ -71,7 +88,7 @@ bool pdp_file_parse_segmented_line (int max_fields,
   // for a non-example program, break these out to separate functions
   // and put the whole thing in a separate import translator file
 
-  
+  // THIS CODE (!strcmp) IS SCREWY!!!   
   // decide how to process line based on field 0
   if (!strcmp (extracted_fields[0], "NUMERIC_VAR1")) {
     

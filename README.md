@@ -16,20 +16,22 @@ gtk_pango_layout.c: eample code for using pango to put text on a cairo drawing a
 
 
 
-
 pdpgui_draw.c - library which implements basic cairo drawing functions for
 pdp objects (eg drawing units, drawing connections, etc)
 
+
 string_parse.c - library of functions for reading config files and getting their data out
 into a set of C data structures. Some functions should be customised for program-specific
-data.
+data. NOTE that important program-specific settings (eg., parameter names) are hard coded 
+in string_parse.c
 
-gtk_confic_files - example code for a gui which uses string_parse library to read parameter 
+
+gtk_config_files - example code for a gui which uses string_parse library to read parameter 
 settings from a config file and updates a parameters page displaying current parameter 
-settings. 
+settings. NOTE that important program-specific settings (eg., parameter names) are hard coded 
+in string_parse.c
+
 
 pdpgui_architecture.c - example code for a basic (mocked up) gui, 
 tabbed notebook and architecture view tab.
-
-
 

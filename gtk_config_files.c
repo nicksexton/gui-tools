@@ -9,6 +9,17 @@
 #define CONFIG_FILE gtk_config_file.conf
 #define FILENAME_MAX_LENGTH 40
 
+typedef struct display_widgets {
+
+  GtkWidget *param1_name;
+  GtkWidget *param1_1;
+  GtkWidget *param1_2;
+
+  GtkWidget *param2_name;
+  GtkWidget *param2_1;
+  GtkWidget *param2_2;
+
+} DisplayWidgets;
 
 typedef struct file_data {
   GtkWidget * filename_label; // store filename in the text of a gtk widget
@@ -16,9 +27,55 @@ typedef struct file_data {
 
   FILE * fp; // file pointer itself
   GenericParameterSet * data; // from string_parse.h
+  DisplayWidgets * display_widgets;
+
 } FileData;
 
 
+void config_file_copy_data_to_display_widgets (FileData * config_file) {
+
+  char textbuf[FIELD_SIZE];
+
+  gtk_label_set_text(GTK_LABEL(config_file->display_widgets->param1_name), config_file->data->parameter_1.name);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_1);
+  gtk_label_set_text(GTK_LABEL(config_file->display_widgets->param1_1), textbuf);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_2);
+  gtk_label_set_text(GTK_LABEL(config_file->display_widgets->param1_2), textbuf);
+
+  gtk_label_set_text(GTK_LABEL(config_file->display_widgets->param2_name), config_file->data->parameter_2.name);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_1);
+  gtk_label_set_text(GTK_LABEL(config_file->display_widgets->param2_1), textbuf);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_2);
+  gtk_label_set_text(GTK_LABEL(config_file->display_widgets->param2_2), textbuf);
+
+
+}
+
+
+void config_file_init_display_widgets(FileData * config_file) {
+
+  char textbuf[FIELD_SIZE];
+
+  config_file->display_widgets->param1_name = gtk_label_new (config_file->data->parameter_1.name);
+  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_1);
+  config_file->display_widgets->param1_1 = gtk_label_new (textbuf);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_2);
+  config_file->display_widgets->param1_2 = gtk_label_new (textbuf);
+
+  config_file->display_widgets->param2_name = gtk_label_new (config_file->data->parameter_2.name);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_1);
+  config_file->display_widgets->param2_1 = gtk_label_new (textbuf);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_2);
+  config_file->display_widgets->param2_2 = gtk_label_new (textbuf);
+
+}
 
 
 // callback function to read file contents
@@ -33,6 +90,10 @@ gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
     printf ("success! config file opened.\n");
 
     parse_file (file_info->fp, file_info->data);
+    print_generic_parameter_set (file_info->data);
+
+    // now copy from data back into display widgets
+    config_file_copy_data_to_display_widgets(file_info);
 
     fclose(file_info->fp);
     printf ("success! config file closed.\n");
@@ -63,45 +124,21 @@ void select_file (GtkComboBoxText *widget, FileData * config_file) {
 static GtkWidget* display_generic_parameter_data (FileData *config_file) {
   // 
   GtkWidget *grid;
-  GtkWidget *param1_name;
-  GtkWidget *param1_1;
-  GtkWidget *param1_2;
-
-  GtkWidget *param2_name;
-  GtkWidget *param2_1;
-  GtkWidget *param2_2;
     
-  char textbuf[FIELD_SIZE];
-
-  param1_name = gtk_label_new (config_file->data->parameter_1.name);
-  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_1);
-  param1_1 = gtk_label_new (textbuf);
-
-  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_2);
-  param1_2 = gtk_label_new (textbuf);
-
-  param2_name = gtk_label_new (config_file->data->parameter_2.name);
-
-  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_1);
-  param2_1 = gtk_label_new (textbuf);
-
-  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_2);
-  param2_2 = gtk_label_new (textbuf);
-
   grid = gtk_grid_new();
   
-  gtk_grid_attach (GTK_GRID(grid), param1_name, 0, 0, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid), param2_name, 0, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), config_file->display_widgets->param1_name, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), config_file->display_widgets->param2_name, 0, 1, 1, 1);
 
-  gtk_grid_attach (GTK_GRID(grid), param1_1, 1, 0, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid), param2_1, 1, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), config_file->display_widgets->param1_1, 1, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), config_file->display_widgets->param2_1, 1, 1, 1, 1);
 
-  gtk_grid_attach (GTK_GRID(grid), param1_2, 2, 0, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid), param2_2, 2, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), config_file->display_widgets->param1_2, 2, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), config_file->display_widgets->param2_2, 2, 1, 1, 1);
 
   gtk_grid_set_column_spacing (GTK_GRID(grid), 10);
   gtk_widget_set_hexpand (grid, TRUE);
-  gtk_widget_set_size_request (grid, 400, 400);
+  // gtk_widget_set_size_request (grid, 400, 400);
 
   return (grid);
 }
@@ -119,11 +156,13 @@ static void destroy_notepage_fileselect(GtkWidget *notepage_fs, FileData *config
 
 
 
-FileData *init_config_file (){
+
+FileData * init_config_file (){
 
   // first create memory for the file pointer
   FileData *config_file; // struct containing pointers to relevant file data
   config_file = g_malloc (sizeof(FileData)); 
+  config_file->display_widgets = g_malloc (sizeof(DisplayWidgets));
   config_file->fp = NULL;
 
   char filename[FILENAME_MAX_LENGTH];
@@ -134,6 +173,12 @@ FileData *init_config_file (){
   init_generic_parameter_set(config_file->data);
       // in production version, data should not be a member of the file pointer as 
       // we want it to persist
+
+  
+
+  // now init display widgets
+  config_file_init_display_widgets (config_file);
+  
 
   return config_file;
 }
@@ -154,7 +199,9 @@ static GtkWidget* create_notepage_fileselect() {
   
   file_select = gtk_combo_box_text_new();
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
-				 "gtk_config_file.conf");
+				 "gtk_config_file_1.conf");
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
+				 "gtk_config_file_2.conf");
   g_signal_connect (file_select, "changed", G_CALLBACK(select_file), (gpointer)(config_file) );
 
   // aesthetic: give this a standard icon
@@ -173,9 +220,8 @@ static GtkWidget* create_notepage_fileselect() {
   
   gtk_grid_attach (GTK_GRID(grid_main), grid_controls, 0, 0, 1, 1);
   gtk_grid_attach (GTK_GRID(grid_main), display_generic_parameter_data(config_file), 1, 0, 1, 1);
+  gtk_grid_set_column_spacing (GTK_GRID(grid_main), 30);
   gtk_widget_set_hexpand (GTK_WIDGET(grid_main), TRUE);
-
-
 
 
   gtk_widget_show_all(grid_main);

@@ -121,7 +121,7 @@ static GtkWidget* create_notepage_fileselect() {
   gtk_widget_show_all(grid);
 
   // destroy config_file pointer here to prevent memory leak?
-
+  g_free (config_file)
   return (grid);
   
 }
@@ -173,7 +173,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_notebook_append_page(GTK_NOTEBOOK(notes), 
 			   create_notepage_fileselect(), 
 			   gtk_label_new("Config"));
-
 
   // Create a full-window grid to contain toolbar and the notebook
   grid = gtk_grid_new();

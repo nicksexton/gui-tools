@@ -48,6 +48,7 @@ static void populate_tree_model (GtkTreeStore * store) {
   gtk_tree_store_append (store, &iter2, &iter1); // acquire a child iterator
   gtk_tree_store_set (store, &iter2,
 		      TITLE_COLUMN, "Volume 1: Foundations", 
+		      CHECKED_COLUMN, TRUE,
 		      -1); 
 
   gtk_tree_store_append (store, &iter2, &iter1); // acquire a child iterator
@@ -109,7 +110,7 @@ static GtkWidget* create_notepage_treeview() {
   gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
 
   // last column... whenever a book is checked out
-  renderer = gtk_cell_renderer_text_new ();
+  renderer = gtk_cell_renderer_toggle_new ();
   column = gtk_tree_view_column_new_with_attributes ("Checked out", renderer, "active",
 						     CHECKED_COLUMN,
 						     NULL);

@@ -58,21 +58,24 @@ static void populate_tree_model (GtkTreeStore * store) {
 
 
 }
+/*
+// selection handling
+// prototype for selection handler callback
+static void tree_selection_changed_cb (GtkTreeSelection *selection, gpointer data) {
 
 
-static GtkWidget* create_notepage_treeview() {
+}
+*/
 
-  GtkWidget *grid;
-
-
+// returns a Treestore 
+static GtkWidget * create_treestore () {
 
   GtkTreeStore *store;
   GtkWidget *tree;
+
+
   GtkTreeViewColumn *column;
   GtkCellRenderer *renderer;
-
-  // create a model. Using the store model for now, though
-  // could use any GtkTreeModel
 
   store = gtk_tree_store_new (N_COLUMNS,
 			      G_TYPE_STRING,
@@ -117,6 +120,22 @@ static GtkWidget* create_notepage_treeview() {
 
   gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
 
+  return tree;
+
+}
+
+
+
+static GtkWidget* create_notepage_treeview() {
+
+  GtkWidget *grid;
+  GtkWidget *tree;
+
+  // create a model. Using the store model for now, though
+  // could use any GtkTreeModel
+
+  tree = create_treestore ();
+
 
 
   grid = gtk_grid_new();
@@ -128,6 +147,7 @@ static GtkWidget* create_notepage_treeview() {
   return (grid);
 
 }
+
   
 static void activate(GtkApplication *app, gpointer user_data) {
 
@@ -163,6 +183,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   gtk_widget_show_all (window);
 }
+
 
 int main (int argc, char *argv[]) {
 

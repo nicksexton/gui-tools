@@ -1,16 +1,127 @@
 #include <gtk/gtk.h>
 
 
+enum {
+  TITLE_COLUMN,
+  AUTHOR_COLUMN,
+  CHECKED_COLUMN,
+  N_COLUMNS
+};
+
+
+static void populate_tree_model (GtkTreeStore * store) {
+
+  GtkTreeIter iter1; // parent iterator
+  GtkTreeIter iter2; // child iterator
+
+  gtk_tree_store_append (store, &iter1, NULL); // acquire a top-level iterator
+
+  gtk_tree_store_set (store, &iter1,
+		      TITLE_COLUMN, "The Art of Computer Programming", 
+		      AUTHOR_COLUMN, "Donald E. Knuth",
+		      CHECKED_COLUMN, FALSE,
+		      -1); // -1 used to indicate end of data
+  
+  gtk_tree_store_append (store, &iter2, &iter1); // acquire a child iterator
+  gtk_tree_store_set (store, &iter2,
+		      TITLE_COLUMN, "Volume 1: Fundamental Algorithms", 
+		      -1); 
+
+  gtk_tree_store_append (store, &iter2, &iter1);
+  gtk_tree_store_set (store, &iter2,
+		      TITLE_COLUMN, "Volume 2: Seminumerical Algorithms", 
+		      -1); 
+
+  gtk_tree_store_append (store, &iter2, &iter1);
+  gtk_tree_store_set (store, &iter2,
+		      TITLE_COLUMN, "Volume 3: Sorting and Searching", 
+		      -1); 
+
+  gtk_tree_store_append (store, &iter1, NULL); // acquire a top-level iterator
+  gtk_tree_store_set (store, &iter1,
+		      TITLE_COLUMN, "Parallel Distributed Processing", 
+		      AUTHOR_COLUMN, "Rumelhart, D., McClelland, J., The PDP Research Group",
+		      CHECKED_COLUMN, FALSE,
+		      -1); // -1 used to indicate end of data
+
+
+  gtk_tree_store_append (store, &iter2, &iter1); // acquire a child iterator
+  gtk_tree_store_set (store, &iter2,
+		      TITLE_COLUMN, "Volume 1: Foundations", 
+		      -1); 
+
+  gtk_tree_store_append (store, &iter2, &iter1); // acquire a child iterator
+  gtk_tree_store_set (store, &iter2,
+		      TITLE_COLUMN, "Volume 2: Psychological and Biological Models", 
+		      -1); 
+
+
+}
+
+
 static GtkWidget* create_notepage_treeview() {
 
   GtkWidget *grid;
-  GtkWidget *label1;
 
-  label1 = gtk_label_new("Tree view:");
+
+
+  GtkTreeStore *store;
+  GtkWidget *tree;
+  GtkTreeViewColumn *column;
+  GtkCellRenderer *renderer;
+
+  // create a model. Using the store model for now, though
+  // could use any GtkTreeModel
+
+  store = gtk_tree_store_new (N_COLUMNS,
+			      G_TYPE_STRING,
+			      G_TYPE_STRING,
+			      G_TYPE_BOOLEAN);
+
+  // custom function to fill the model with data
+  populate_tree_model (store);
+
+  // create a view
+  tree = gtk_tree_view_new_with_model (GTK_TREE_MODEL (store));
+
+  // view now holds a reference. Get rid of our own reference:
+  g_object_unref (G_OBJECT (store));
+
+  // create a cell renderer, arbitrarily make it red for demonstration purposes
+  renderer = gtk_cell_renderer_text_new ();
+  g_object_set (G_OBJECT (renderer), "foreground", "red", NULL);
+
+  // create a column, associate the "text" attribute of the cell renderer to the
+  // first column of the model
+  column = gtk_tree_view_column_new_with_attributes ("Author", renderer,
+						     "text", AUTHOR_COLUMN,
+						     NULL);
+
+  // add the column to the view
+  gtk_tree_view_append_column (GTK_TREE_VIEW(tree), column);
+
+  // second column... title of the book
+  renderer = gtk_cell_renderer_text_new ();
+  column = gtk_tree_view_column_new_with_attributes ("Title", renderer, "text",
+						     TITLE_COLUMN,
+						     NULL);
+
+  gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+  // last column... whenever a book is checked out
+  renderer = gtk_cell_renderer_text_new ();
+  column = gtk_tree_view_column_new_with_attributes ("Checked out", renderer, "active",
+						     CHECKED_COLUMN,
+						     NULL);
+
+  gtk_tree_view_append_column (GTK_TREE_VIEW (tree), column);
+
+
 
   grid = gtk_grid_new();
-  gtk_grid_attach (GTK_GRID(grid), label1, 0, 0, 1, 1);
-  //  gtk_widget_set_vexpand (GTK_WIDGET(grid), TRUE);
+
+  gtk_grid_attach (GTK_GRID(grid), tree, 0, 0, 1, 1);
+  // attach some widgets to the grid
 
   gtk_widget_show_all(grid);
   return (grid);
@@ -44,7 +155,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   // Create a full-window grid to contain toolbar and the notebook
   grid = gtk_grid_new();
-  gtk_grid_attach (GTK_GRID(grid), toolbar, 0, 0, 1, 1);
   gtk_grid_attach (GTK_GRID(grid), notes, 0, 1, 1, 1);
 
   gtk_container_add (GTK_CONTAINER(window), GTK_WIDGET(grid));

@@ -9,6 +9,7 @@
 #define CONFIG_FILE gtk_config_file.conf
 #define FILENAME_MAX_LENGTH 40
 
+
 typedef struct file_data {
   GtkWidget * filename_label; // store filename in the text of a gtk widget
   char filename[FILENAME_MAX_LENGTH];
@@ -17,16 +18,21 @@ typedef struct file_data {
   GenericParameterSet * data; // from string_parse.h
 } FileData;
 
+
 // callback function to read file contents
 gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
-
 
   file_info->fp = fopen(file_info->filename, "r");
   if (file_info->fp == NULL) {
     printf ("error! gtk_config_file.conf does not exist\n");
     return FALSE;
   }
-  else printf ("success! config file opened.\n");
+  else {
+    printf ("success! config file opened.\n");
+
+    fclose(file_info->fp);
+    printf ("success! config file closed.\n");
+  }
 
   return TRUE;
 }
@@ -50,6 +56,60 @@ void select_file (GtkComboBoxText *widget, FileData * config_file) {
 }
 
 
+static GtkWidget* display_generic_parameter_data (FileData *config_file) {
+  // 
+  GtkWidget *grid;
+  GtkWidget *param1_name;
+  GtkWidget *param1_1;
+  GtkWidget *param1_2;
+
+  GtkWidget *param2_name;
+  GtkWidget *param2_1;
+  GtkWidget *param2_2;
+    
+  char textbuf[FIELD_SIZE];
+
+  param1_name = gtk_label_new (config_file->data->parameter_1.name);
+  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_1);
+  param1_1 = gtk_label_new (textbuf);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_1.data_int_2);
+  param1_2 = gtk_label_new (textbuf);
+
+  param2_name = gtk_label_new (config_file->data->parameter_2.name);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_1);
+  param2_1 = gtk_label_new (textbuf);
+
+  sprintf(textbuf, "%d", config_file->data->parameter_2.data_int_2);
+  param2_2 = gtk_label_new (textbuf);
+
+  grid = gtk_grid_new();
+
+  gtk_grid_attach (GTK_GRID(grid), param1_name, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), param2_name, 0, 1, 1, 1);
+
+  gtk_grid_attach (GTK_GRID(grid), param1_1, 1, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), param2_1, 1, 1, 1, 1);
+
+  gtk_grid_attach (GTK_GRID(grid), param1_2, 2, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID(grid), param2_2, 2, 1, 1, 1);
+
+
+  return (grid);
+}
+
+
+static void destroy_notepage_fileselect(GtkWidget *notepage_fs, FileData *config_file) {
+
+  // g_free (config_file->filename_label); 
+     // don't need to explicitly free this?
+  // config file should already be closed by any function that accesses it (eg load_from_file)
+  g_free (config_file->data);
+  g_free (config_file);
+  printf ("all memory associated with config_file freed\n");
+}
+
 
 static GtkWidget* create_notepage_fileselect() {
 
@@ -58,20 +118,24 @@ static GtkWidget* create_notepage_fileselect() {
   GtkWidget *file_select;
   GtkWidget *button_process_configfile;
 
-
+  // first create memory for the file pointer
   FileData *config_file; // struct containing pointers to relevant file data
   config_file = g_malloc (sizeof(FileData)); 
   config_file->fp = NULL;
-  // init_generic_parameter_set(config_file->data);  
+
 
   char filename[FILENAME_MAX_LENGTH];
   strcpy (filename, "no file selected");
   config_file->filename_label = gtk_label_new(filename);
 
+  config_file->data = g_malloc(sizeof(GenericParameterSet));
+  init_generic_parameter_set(config_file->data);
+      // in production version, data should not be a member of the file pointer as 
+      // we want it to persist
 
 
   label1 = gtk_label_new("Select config file");
-  gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);  
+  gtk_label_set_line_wrap(GTK_LABEL(label1), TRUE);
   
   file_select = gtk_combo_box_text_new();
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
@@ -89,14 +153,23 @@ static GtkWidget* create_notepage_fileselect() {
   gtk_grid_attach (GTK_GRID(grid), config_file->filename_label, 0, 2, 1, 1);
   gtk_grid_attach (GTK_GRID(grid), button_process_configfile, 0, 3, 1, 1);
   
+  gtk_grid_attach (GTK_GRID(grid), display_generic_parameter_data(config_file), 1, 0, 1, 4);
+
   gtk_widget_set_vexpand (GTK_WIDGET(grid), TRUE);
+
+
   
   gtk_widget_show_all(grid);
 
-  // destroy config_file pointer here to prevent memory leak?
+  g_signal_connect (G_OBJECT(grid), "destroy", 
+		    G_CALLBACK (destroy_notepage_fileselect), 
+		    (gpointer)config_file);
+
+  // free config_file pointer here to prevent memory leak?
   return (grid);
   
 }
+
   
 static void activate(GtkApplication *app, gpointer user_data) {
 
@@ -116,8 +189,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_window_set_title (GTK_WINDOW(window), "GUI: notebook");
   gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-  gtk_container_set_border_width (GTK_CONTAINER(window), 10);
-  
+  gtk_container_set_border_width (GTK_CONTAINER(window), 10);  
 
   // ------------- TOOLBAR ----------------
   // Create a basic toolbar
@@ -155,6 +227,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   gtk_widget_show_all (window);
 }
+
 
 int main (int argc, char *argv[]) {
 

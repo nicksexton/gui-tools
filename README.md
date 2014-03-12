@@ -17,9 +17,9 @@ an application-specific translater function can then operate over the treestore 
    | params.conf  -+---------->+ data structure+---<----+  treeview      |
    |  		   | segment   |               +-->-+   +----------------+
    +---------------+ & parse   +---------------+    |   +----------------+
-		     app-independent		    +->-+  model params  |
-			       	       	   translator   |  struct	 |
-					  app-specific  +----------------+
+                 app-independent                    +->-+  model params  |
+                                           translator   |  struct	 |
+                                          app-specific  +----------------+
 
 </pre>
 

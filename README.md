@@ -10,6 +10,7 @@ an application-specific translater function can then operate over the treestore 
 (ie., a model_parameters struct which is defined in header file for _model file/module.
 
 
+<rawtext>
       			 	      	 	    
    +---------------+	       o---------------+        +----------------+
    | config file:  |	       | treestore     +-->-----+ pdpgui viewer  |
@@ -20,6 +21,7 @@ an application-specific translater function can then operate over the treestore 
 			       	       	   translator   |  struct	 |
 					  app-specific  +----------------+
 
+</rawtext>
 
 
 ####gui-tools master####

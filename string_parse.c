@@ -206,7 +206,12 @@ int pdp_file_segment_new_line (FILE *input_file,
 
   fgets(input_line, sizeof input_line, input_file);
   
-  ptr = input_line;
+  if (input_line == NULL) {
+    return 0;
+  }
+  else {
+
+    ptr = input_line;
 
     if (feof(input_file)) {
       printf ("end of file reached, all is good\n");
@@ -216,7 +221,7 @@ int pdp_file_segment_new_line (FILE *input_file,
     if (ferror (input_file)) {
       printf ("a file read error occurred, exiting\n");
       return -2;
-   } 
+    } 
 
 
     // check if line contains a comment, position end of line pointer at the comment
@@ -230,22 +235,28 @@ int pdp_file_segment_new_line (FILE *input_file,
 
       // This line does not work very well
       // field delimiters - tabs, newlines
-      sscanf (ptr, "%50[^\t\n]%n", extracted_fields[f], &n);
+      sscanf (ptr, "%50[^\t\n ]%n", extracted_fields[f], &n);
 
+      if ((ptr + n) > ptr_eol) {
+	return f;
+      }
+      else {
+	ptr += n;
 
-      ptr += n;
-      if ((*ptr != '\t') && (*ptr != '\n')) break; // no delimiter, end of file reached?
-      // need to handle condition here where \t is followed by a \n 
+	if ((*ptr != '\t') && (*ptr != '\n') && (*ptr != ' ')) break; // no delimiter, end of file reached?
+	// need to handle condition here where \t is followed by a \n 
       
 
-      ptr += 1; // skip the delimiter
-      while ((*ptr == '\t') || (*ptr == '\n')) {
-	ptr += 1; 
-	f++;
+	ptr += 1; // skip the delimiter
+	while ((*ptr == '\t') || (*ptr == '\n') || (*ptr == ' ')) {
+	  ptr += 1; 
+	  f++;
+	}
+	f ++;
       }
-      f ++;
     }
     return f;
+  }
 }
 
 
@@ -321,9 +332,9 @@ int pdp_file_parse_to_treestore (FileData *file_info) {
   while (more_lines) {
     line_counter ++;
     fields_extracted = pdp_file_segment_new_line (file_info->fp, 
-						MAX_FIELDS, 
-						FIELD_SIZE, 
-						fields);
+						  MAX_FIELDS, 
+						  FIELD_SIZE, 
+						  fields);
 
     switch (fields_extracted) {
     case -2: {

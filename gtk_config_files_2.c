@@ -195,6 +195,8 @@ static GtkWidget* create_notepage_fileselect() {
 				 "gtk_config_file_1.conf");
   gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
 				 "gtk_config_file_2.conf");
+  gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(file_select), 
+				 "pdpgui_gs_params_default.conf");
   g_signal_connect (file_select, "changed", G_CALLBACK(select_file), (gpointer)(config_file) );
 
   // aesthetic: give this a standard icon

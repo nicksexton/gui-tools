@@ -7,7 +7,7 @@
 #include "string_parse.h"
 
 #define CONFIG_FILE gtk_config_file.conf
-#define FILENAME_MAX_LENGTH 40
+
 
 typedef struct display_widgets {
 
@@ -36,7 +36,7 @@ gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
   else {
     printf ("success! config file opened.\n");
 
-    pdp_file_parse_to_treemodel (file_info);
+    pdp_file_parse_to_treestore (file_info);
 
     fclose(file_info->fp);
     printf ("success! config file closed.\n");
@@ -77,7 +77,7 @@ static void destroy_notepage_fileselect(GtkWidget *notepage_fs, FileData *config
 
 
 
-FileData * init_config_file (GtkTreeModel * tree_model){
+FileData * init_config_file (GtkTreeStore * tree_store){
 
   // first create memory for the file pointer
   FileData *config_file; // struct containing pointers to relevant file data
@@ -88,7 +88,7 @@ FileData * init_config_file (GtkTreeModel * tree_model){
   strcpy (filename, "no file selected");
   config_file->filename_label = gtk_label_new(filename);
   
-  config_file->tree_model = tree_model;
+  config_file->tree_store = tree_store;
 
   return config_file;
 }
@@ -114,7 +114,7 @@ static void config_file_treeview_selection_changed_cb (GtkTreeSelection *selecti
 }
 
 
-static void setup_config_file_treeview (GtkTreeModel * tree_model) {
+static void setup_config_file_treeview (GtkTreeView * tree) {
 
   GtkTreeViewColumn *column;
   GtkCellRenderer *renderer;
@@ -181,10 +181,10 @@ static GtkWidget* create_notepage_fileselect() {
   g_object_unref (G_OBJECT (store));
 
   // setup tree view
-  setup_config_file_treeview (gtk_tree_view_get_model(tree));
+  setup_config_file_treeview (GTK_TREE_VIEW(tree));
   
   // setup config file data  
-  FileData * config_file = init_config_file(GTK_TREE_MODEL(tree));
+  FileData * config_file = init_config_file(GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(tree))));
 
 
   label1 = gtk_label_new("Select config file");
@@ -212,8 +212,8 @@ static GtkWidget* create_notepage_fileselect() {
   //  gtk_widget_set_vexpand (GTK_WIDGET(grid_controls), TRUE);
   
   gtk_grid_attach (GTK_GRID(grid_main), grid_controls, 0, 0, 1, 1);
-  gtk_grid_attach (GTK_GRID(grid_main), tree, 0, 1, 1, 1);
-  gtk_grid_set_row_spacing (GTK_GRID(grid_main), 30);
+  gtk_grid_attach (GTK_GRID(grid_main), tree, 1, 0, 1, 1);
+  gtk_grid_set_column_spacing (GTK_GRID(grid_main), 30);
   gtk_widget_set_vexpand (GTK_WIDGET(grid_main), TRUE);
   gtk_widget_set_hexpand (GTK_WIDGET(grid_main), TRUE);
 

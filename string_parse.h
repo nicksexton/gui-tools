@@ -6,6 +6,7 @@
 // MAX_LINE_LENGTH should be MAX_FIELDS * FIELD_SIZE
 #define MAX_LINE_LENGTH 512
 
+#define FILENAME_MAX_LENGTH 40
 
 #include <stdbool.h>
 
@@ -22,7 +23,7 @@ typedef struct file_data {
   char filename[FILENAME_MAX_LENGTH];
 
   FILE * fp; // file pointer itself
-  GtkTreeModel * tree_model; // pointer to tree model that will store the data
+  GtkTreeStore * tree_store; // pointer to tree model that will store the data
 
 } FileData;
 
@@ -92,6 +93,9 @@ int pdp_file_segment_new_line (FILE *input_file,
   // returns 0 if line is empty,
   // returns -1 if EOF
   // returns -2 if error
+
+int pdp_file_parse_to_treestore (FileData *file_info);
+  // alternative version to parse_file that extracts data into a treestore
 
 int parse_file (FILE *config_file, GenericParameterSet *my_params);
   // example code to test string_parse functions 

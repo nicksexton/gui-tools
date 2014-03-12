@@ -98,11 +98,8 @@ void pdp_file_segmented_line_to_treestore (int max_fields,
   gtk_tree_store_set (store, &iter1, 
 		      COL_PARAMETER_NAME, extracted_fields[0], -1);
 
-  gtk_tree_store_append (store, &iter1, NULL);
   gtk_tree_store_set (store, &iter1, 
 		      COL_PARAMETER_VALUE, extracted_fields[1], -1);
-
-
 
 
 }
@@ -313,7 +310,7 @@ int parse_file (FILE *config_file, GenericParameterSet *my_params) {
 
 // example code to test string_parse functions 
 // change GenericParameterSet type to a program-specific struct containing parameters
-int pdp_file_parse_to_treemodel (FileData *file_info) {
+int pdp_file_parse_to_treestore (FileData *file_info) {
 
 
   char fields [MAX_FIELDS][FIELD_SIZE];
@@ -349,9 +346,9 @@ int pdp_file_parse_to_treemodel (FileData *file_info) {
 	pdp_file_segmented_line_to_treestore (MAX_FIELDS, 
 					      FIELD_SIZE, 
 					      fields,
-					      file_info->tree_model );
+					      file_info->tree_store );
 
-	printf ("imported - %s:\t$s\n", fields[0], fields[1]);
+	printf ("imported - %s:\t%s\n", fields[0], fields[1]);
 
       }
       else {

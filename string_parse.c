@@ -11,7 +11,7 @@
 #include "string_parse.h"
 
 
-
+/*
 void init_generic_parameter (GenericParameter * param) {
 
   // init default parameter settings here
@@ -27,7 +27,9 @@ void init_generic_parameter (GenericParameter * param) {
   strcpy (param->data_text_2, "");
 
 }
+*/
 
+/*
 void init_generic_parameter_set (GenericParameterSet *param_set) {
 
   init_generic_parameter (&(param_set->parameter_1));
@@ -54,9 +56,9 @@ void init_generic_parameter_set (GenericParameterSet *param_set) {
 
 
 }
+*/
 
-
-
+/*
 void print_generic_parameter (GenericParameter * param) {
 
   printf ("\nParameter %s, id %d:\n", param->name, param->id);
@@ -68,7 +70,9 @@ void print_generic_parameter (GenericParameter * param) {
 	  param->data_text_1, param->data_text_2);
 
 }
+*/
 
+/*
 void print_generic_parameter_set (GenericParameterSet * param) {
 
   print_generic_parameter (&(param->parameter_1));
@@ -78,6 +82,7 @@ void print_generic_parameter_set (GenericParameterSet * param) {
   print_generic_parameter (&(param->parameter_5));
 
 }
+*/
 
 
 // GTK function - uses a treestore
@@ -104,7 +109,7 @@ void pdp_file_segmented_line_to_treestore (int max_fields,
 
 }
 
-
+/*
 bool pdp_file_parse_segmented_line (int max_fields, 
 				    int field_size, 
 				    char extracted_fields[max_fields][field_size],
@@ -176,6 +181,7 @@ bool pdp_file_parse_segmented_line (int max_fields,
 
   return false;
 }
+*/
 
 
 int pdp_file_segment_new_line (FILE *input_file, 
@@ -259,7 +265,7 @@ int pdp_file_segment_new_line (FILE *input_file,
   }
 }
 
-
+/*
 // example code to test string_parse functions 
 // change GenericParameterSet type to a program-specific struct containing parameters
 int parse_file (FILE *config_file, GenericParameterSet *my_params) {
@@ -317,10 +323,10 @@ int parse_file (FILE *config_file, GenericParameterSet *my_params) {
 
   return 0;
 }
+*/
 
-
-// example code to test string_parse functions 
-// change GenericParameterSet type to a program-specific struct containing parameters
+// more general code - parses an entire config file and transfers first two fields
+// on each line to a to treestore
 int pdp_file_parse_to_treestore (FileData *file_info) {
 
 

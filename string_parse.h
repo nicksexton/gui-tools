@@ -28,7 +28,7 @@ typedef struct file_data {
 } FileData;
 
 
-
+/*
 typedef struct generic_parameter {
   int id;
   char name[FIELD_SIZE];
@@ -36,7 +36,9 @@ typedef struct generic_parameter {
   double data_double_1, data_double_2, data_double_3;
   char data_text_1[FIELD_SIZE], data_text_2[FIELD_SIZE];
 } GenericParameter;
+*/
 
+/*
 typedef struct generic_parameter_set {
 
   GenericParameter parameter_1;
@@ -46,16 +48,16 @@ typedef struct generic_parameter_set {
   GenericParameter parameter_5;
 
 } GenericParameterSet;
+*/
+
+// void init_generic_parameter (GenericParameter * param);
+
+// void init_generic_parameter_set (GenericParameterSet *param_set);
+
+// void print_generic_parameter (GenericParameter * param);
 
 
-void init_generic_parameter (GenericParameter * param);
-
-void init_generic_parameter_set (GenericParameterSet *param_set);
-
-void print_generic_parameter (GenericParameter * param);
-
-
-void print_generic_parameter_set (GenericParameterSet * param);
+// void print_generic_parameter_set (GenericParameterSet * param);
 
 
 
@@ -68,9 +70,11 @@ void pdp_file_segmented_line_to_treestore (int max_fields,
   // stores first two fields on line (param name and param value) into treestore
   // despite max_fields, only reads first two fields (param name and param value)
   // perhaps tidy this
+  // defers conversion of fields from string to other data types - should be done
+  // separately by a translator module which reads from the treestore
 
 
-
+/*
 bool pdp_file_parse_segmented_line (int max_fields, 
 				    int field_size, 
 				    char extracted_fields[max_fields][field_size],
@@ -80,7 +84,7 @@ bool pdp_file_parse_segmented_line (int max_fields,
   // (eg assign to parameters)
   // for a non-example program, break these out to separate functions
   // and put the whole thing in a separate import translator file
-
+*/
 
 
 int pdp_file_segment_new_line (FILE *input_file, 
@@ -94,13 +98,15 @@ int pdp_file_segment_new_line (FILE *input_file,
   // returns -1 if EOF
   // returns -2 if error
 
+
 int pdp_file_parse_to_treestore (FileData *file_info);
   // alternative version to parse_file that extracts data into a treestore
 
+/*
 int parse_file (FILE *config_file, GenericParameterSet *my_params);
   // example code to test string_parse functions 
   // change GenericParameterSet type to a program-specific struct containing parameters
-
+  */
 
 
 #endif

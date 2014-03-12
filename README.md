@@ -18,10 +18,11 @@ an application-specific translater function can then operate over the treestore 
    |  		   | segment   |               +-->-+   +----------------+
    +---------------+ & parse   +---------------+    |   +----------------+
                  app-independent                    +->-+  model params  |
-                                           translator   |  struct	 |
+                                           translator   |  struct        |
                                           app-specific  +----------------+
 
 </pre>
+
 
 
 ####gui-tools master####

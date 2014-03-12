@@ -2,11 +2,14 @@
    fix parsing to use sscanf or similar to assign numeric variables 
    fix parsing so that space or comma can also be used as a delimiter */
 
+#include <gtk/gtk.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include "string_parse.h"
+
 
 
 void init_generic_parameter (GenericParameter * param) {
@@ -77,7 +80,32 @@ void print_generic_parameter_set (GenericParameterSet * param) {
 }
 
 
+// GTK function - uses a treestore
+// replacement for pdp_file_parse_segmented_line
+// stores first two fields on line (param name and param value) into treestore
+// despite max_fields, only reads first two fields (param name and param value)
+// perhaps tidy this
+void pdp_file_segmented_line_to_treestore (int max_fields, 
+					   int field_size, 
+					   char extracted_fields[max_fields][field_size],
+					   GtkTreeStore * store ) {
 
+  GtkTreeIter iter1;
+
+  gtk_tree_store_append (store, &iter1, NULL);
+
+  // defer string conversion, save everything as a string
+  gtk_tree_store_set (store, &iter1, 
+		      COL_PARAMETER_NAME, extracted_fields[0], -1);
+
+  gtk_tree_store_append (store, &iter1, NULL);
+  gtk_tree_store_set (store, &iter1, 
+		      COL_PARAMETER_VALUE, extracted_fields[1], -1);
+
+
+
+
+}
 
 
 bool pdp_file_parse_segmented_line (int max_fields, 
@@ -281,6 +309,63 @@ int parse_file (FILE *config_file, GenericParameterSet *my_params) {
 
   return 0;
 }
+
+
+// example code to test string_parse functions 
+// change GenericParameterSet type to a program-specific struct containing parameters
+int pdp_file_parse_to_treemodel (FileData *file_info) {
+
+
+  char fields [MAX_FIELDS][FIELD_SIZE];
+  int line_counter = 0;
+  int fields_extracted;
+  bool more_lines = true;
+
+  while (more_lines) {
+    line_counter ++;
+    fields_extracted = pdp_file_segment_new_line (file_info->fp, 
+						MAX_FIELDS, 
+						FIELD_SIZE, 
+						fields);
+
+    switch (fields_extracted) {
+    case -2: {
+      printf ("File read error, exiting!\n");
+      exit(EXIT_FAILURE);
+    }
+  
+    case -1: {
+      printf ("End of file reached, no more lines to get\n");
+      more_lines = false;
+      break;
+    }
+
+    default: {
+      printf ("processing line %d\t", line_counter);
+      // process the data
+      if (fields_extracted > 0) { // was any data extracted?
+	// if so, process the data
+
+	pdp_file_segmented_line_to_treestore (MAX_FIELDS, 
+					      FIELD_SIZE, 
+					      fields,
+					      file_info->tree_model );
+
+	printf ("imported - %s:\t$s\n", fields[0], fields[1]);
+
+      }
+      else {
+	printf ("blank line or comment, ignoring\n");
+      }
+    }
+    }
+
+  }
+
+  return 0;
+}
+
+
 
 /*
 int main () {

@@ -9,6 +9,25 @@
 
 #include <stdbool.h>
 
+// tree model for storing parameter names/values
+enum {
+  COL_PARAMETER_NAME,
+  COL_PARAMETER_VALUE,
+  N_COLUMNS
+};
+
+
+typedef struct file_data {
+  GtkWidget * filename_label; // store filename in the text of a gtk widget
+  char filename[FILENAME_MAX_LENGTH];
+
+  FILE * fp; // file pointer itself
+  GtkTreeModel * tree_model; // pointer to tree model that will store the data
+
+} FileData;
+
+
+
 typedef struct generic_parameter {
   int id;
   char name[FIELD_SIZE];
@@ -36,6 +55,18 @@ void print_generic_parameter (GenericParameter * param);
 
 
 void print_generic_parameter_set (GenericParameterSet * param);
+
+
+
+void pdp_file_segmented_line_to_treestore (int max_fields, 
+					   int field_size, 
+					   char extracted_fields[max_fields][field_size],
+					   GtkTreeStore * store );
+  // GTK function - uses a treestore
+  // replacement for pdp_file_parse_segmented_line
+  // stores first two fields on line (param name and param value) into treestore
+  // despite max_fields, only reads first two fields (param name and param value)
+  // perhaps tidy this
 
 
 

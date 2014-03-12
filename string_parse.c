@@ -106,8 +106,8 @@ void pdp_file_segmented_line_to_treestore (int max_fields,
   gtk_tree_store_set (store, &iter1, 
 		      COL_PARAMETER_VALUE, extracted_fields[1], -1);
 
-
 }
+
 
 /*
 bool pdp_file_parse_segmented_line (int max_fields, 

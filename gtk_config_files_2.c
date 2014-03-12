@@ -23,6 +23,25 @@ typedef struct display_widgets {
 
 
 
+// utility function for clearing all entries from a treeview
+gboolean treestore_remove_all (GtkTreeStore * tree_store) {
+
+  GtkTreeIter * iter = g_malloc (sizeof(GtkTreeIter));
+
+  if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL(tree_store), iter)) {
+    // tree is not empty, proceed to remove all items
+
+    while (gtk_tree_store_remove (tree_store, iter)) {
+      // tree_store still contains rows
+    }
+    return TRUE;
+  }
+  else {
+    // tree is already empty,
+    return FALSE;
+  }
+}
+
 
 
 // callback function to read file contents
@@ -36,6 +55,7 @@ gboolean load_from_file (GtkWidget *widget, FileData *file_info) {
   else {
     printf ("success! config file opened.\n");
 
+    treestore_remove_all (file_info->tree_store);
     pdp_file_parse_to_treestore (file_info);
 
     fclose(file_info->fp);
@@ -92,6 +112,8 @@ FileData * init_config_file (GtkTreeStore * tree_store){
 
   return config_file;
 }
+
+
 
 
 // selection handling
